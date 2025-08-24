@@ -1,3 +1,8 @@
+[GIF loading takes a bit of time]
+![footballhigh](https://github.com/user-attachments/assets/e21ea8db-e0de-48c7-a2f5-c2c9375e0a11)
+
+
+
 # Humanoid Soccer Environment
 
 A comprehensive MuJoCo-based 3D soccer simulation environment for reinforcement learning research. This package provides a realistic humanoid robot soccer environment with advanced physics simulation, challenging gameplay mechanics, and comprehensive reward systems.
