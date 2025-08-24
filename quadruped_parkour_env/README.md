@@ -1,3 +1,7 @@
+[GIF loading takes a bit of time]
+![quadupedgif](https://github.com/user-attachments/assets/aab3e31a-b2d5-4165-871d-bd170aed7f6e)
+
+
 # Quadruped Parkour Environment
 
 A comprehensive MuJoCo-based reinforcement learning environment featuring a quadruped robot navigating through challenging parkour courses with dynamic obstacles and terrain variations.
