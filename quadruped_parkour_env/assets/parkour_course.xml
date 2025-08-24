@@ -1,0 +1,151 @@
+<mujoco model="parkour_course">
+  <compiler angle="radian" coordinate="local" inertiafromgeom="true"/>
+  
+  <option timestep="0.001" iterations="50" solver="PGS" gravity="0 0 -9.81"/>
+  
+  <size nconmax="1000" njmax="5000" nstack="1000000"/>
+  
+  <default>
+    <geom conaffinity="1" contype="1" density="1000" friction="0.8 0.1 0.1"/>
+    <joint armature="0" damping="0" limited="false"/>
+  </default>
+  
+  <asset>
+    <texture builtin="gradient" height="100" rgb1="0.4 0.6 1" rgb2="0 0 0.4" type="skybox" width="100"/>
+    <texture builtin="flat" height="1278" mark="cross" markrgb="1 1 1" name="texgeom" random="0.01" rgb1="0.8 0.6 0.4" rgb2="0.8 0.6 0.4" type="cube" width="127"/>
+    <texture builtin="checker" height="100" name="texplane" rgb1="0.2 0.3 0.4" rgb2="0.1 0.2 0.3" type="2d" width="100"/>
+    <texture builtin="flat" name="texwood" rgb1="0.6 0.3 0.1" type="2d" width="100" height="100"/>
+    <texture builtin="flat" name="texmetal" rgb1="0.7 0.7 0.8" type="2d" width="100" height="100"/>
+    <texture builtin="flat" name="texgrass" rgb1="0.2 0.6 0.2" type="2d" width="100" height="100"/>
+    <texture builtin="flat" name="texconcrete" rgb1="0.6 0.6 0.6" type="2d" width="100" height="100"/>
+    
+    <material name="MatPlane" reflectance="0.3" shininess="1" specular="1" texrepeat="60 60" texture="texplane"/>
+    <material name="MatWood" reflectance="0.1" shininess="0.1" specular="0.1" texrepeat="3 3" texture="texwood"/>
+    <material name="MatMetal" reflectance="0.8" shininess="1" specular="1" texrepeat="1 1" texture="texmetal"/>
+    <material name="MatGrass" reflectance="0.1" shininess="0.1" specular="0.1" texrepeat="10 10" texture="texgrass"/>
+    <material name="MatConcrete" reflectance="0.2" shininess="0.3" specular="0.3" texrepeat="5 5" texture="texconcrete"/>
+  </asset>
+  
+  <worldbody>
+    <light cutoff="100" diffuse="1 1 1" dir="-0.2 -0.2 -1" directional="true" exponent="1" pos="0 0 3" specular=".3 .3 .3"/>
+    <light cutoff="50" diffuse="0.8 0.8 1" dir="0.5 0.5 -1" directional="true" exponent="1" pos="50 0 2" specular=".2 .2 .3"/>
+    
+    <!-- Main ground plane -->
+    <geom conaffinity="1" condim="3" material="MatPlane" name="course_floor" pos="50 0 0" rgba="0.4 0.5 0.6 1" size="100 20 0.125" type="plane"/>
+    
+    <!-- Starting platform -->
+    <geom name="start_platform" type="box" pos="2 0 0.1" size="2 3 0.1" material="MatConcrete" rgba="0.3 0.8 0.3 1"/>
+    <geom name="start_marker" type="cylinder" pos="2 0 0.25" size="0.1 0.05" rgba="0 1 0 1"/>
+    
+    <!-- Obstacle 1: Small stairs -->
+    <geom name="stair1_1" type="box" pos="8 0 0.075" size="1 2 0.075" material="MatConcrete" rgba="0.7 0.7 0.7 1"/>
+    <geom name="stair1_2" type="box" pos="9 0 0.15" size="1 2 0.075" material="MatConcrete" rgba="0.7 0.7 0.7 1"/>
+    <geom name="stair1_3" type="box" pos="10 0 0.225" size="1 2 0.075" material="MatConcrete" rgba="0.7 0.7 0.7 1"/>
+    <geom name="stair1_4" type="box" pos="11 0 0.15" size="1 2 0.075" material="MatConcrete" rgba="0.7 0.7 0.7 1"/>
+    <geom name="stair1_5" type="box" pos="12 0 0.075" size="1 2 0.075" material="MatConcrete" rgba="0.7 0.7 0.7 1"/>
+    
+    <!-- Obstacle 2: Gap jump -->
+    <geom name="gap_platform1" type="box" pos="16 0 0.2" size="1.5 2.5 0.2" material="MatWood" rgba="0.6 0.3 0.1 1"/>
+    <geom name="gap_platform2" type="box" pos="19.5 0 0.2" size="1.5 2.5 0.2" material="MatWood" rgba="0.6 0.3 0.1 1"/>
+    
+    <!-- Obstacle 3: Balance beam -->
+    <geom name="beam_support1" type="box" pos="24 -1.5 0.25" size="0.2 0.2 0.25" material="MatMetal" rgba="0.7 0.7 0.8 1"/>
+    <geom name="beam_support2" type="box" pos="24 1.5 0.25" size="0.2 0.2 0.25" material="MatMetal" rgba="0.7 0.7 0.8 1"/>
+    <geom name="balance_beam" type="box" pos="24 0 0.5" size="3 0.05 0.05" material="MatWood" rgba="0.8 0.4 0.2 1"/>
+    
+    <!-- Obstacle 4: Ramp up -->
+    <geom name="ramp_up" type="box" pos="30 0 0.3" size="3 2.5 0.3" material="MatConcrete" rgba="0.6 0.6 0.6 1" euler="0 0.3 0"/>
+    
+    <!-- Obstacle 5: Elevated platform with narrow passage -->
+    <geom name="elevated_platform" type="box" pos="36 0 0.6" size="4 3 0.1" material="MatConcrete" rgba="0.5 0.5 0.7 1"/>
+    <geom name="wall_left" type="box" pos="36 1.2 0.9" size="4 0.2 0.3" material="MatConcrete" rgba="0.4 0.4 0.6 1"/>
+    <geom name="wall_right" type="box" pos="36 -1.2 0.9" size="4 0.2 0.3" material="MatConcrete" rgba="0.4 0.4 0.6 1"/>
+    
+    <!-- Obstacle 6: Moving platform (static for now, will be animated in code) -->
+    <body name="moving_platform" pos="44 0 0.3">
+      <joint name="platform_slide" type="slide" axis="0 1 0" range="-2 2" damping="10"/>
+      <geom name="moving_plat_geom" type="box" size="2 1 0.1" material="MatMetal" rgba="0.8 0.3 0.3 1"/>
+      <inertial pos="0 0 0" mass="100" diaginertia="10 10 10"/>
+    </body>
+    
+    <!-- Obstacle 7: Rough terrain -->
+    <geom name="rough1" type="box" pos="50 -1.5 0.05" size="0.8 0.8 0.05" material="MatGrass" rgba="0.3 0.5 0.2 1" euler="0 0 0.2"/>
+    <geom name="rough2" type="box" pos="51 1 0.08" size="0.6 0.6 0.08" material="MatGrass" rgba="0.3 0.5 0.2 1" euler="0 0 -0.3"/>
+    <geom name="rough3" type="box" pos="52 -0.5 0.06" size="0.7 0.7 0.06" material="MatGrass" rgba="0.3 0.5 0.2 1" euler="0 0 0.4"/>
+    <geom name="rough4" type="box" pos="53 1.5 0.04" size="0.5 0.9 0.04" material="MatGrass" rgba="0.3 0.5 0.2 1" euler="0 0 -0.1"/>
+    <geom name="rough5" type="box" pos="54 -1 0.07" size="0.9 0.5 0.07" material="MatGrass" rgba="0.3 0.5 0.2 1" euler="0 0 0.25"/>
+    
+    <!-- Obstacle 8: Large stairs -->
+    <geom name="big_stair1" type="box" pos="58 0 0.1" size="1.5 3 0.1" material="MatConcrete" rgba="0.7 0.7 0.7 1"/>
+    <geom name="big_stair2" type="box" pos="59.5 0 0.2" size="1.5 3 0.1" material="MatConcrete" rgba="0.7 0.7 0.7 1"/>
+    <geom name="big_stair3" type="box" pos="61 0 0.3" size="1.5 3 0.1" material="MatConcrete" rgba="0.7 0.7 0.7 1"/>
+    <geom name="big_stair4" type="box" pos="62.5 0 0.4" size="1.5 3 0.1" material="MatConcrete" rgba="0.7 0.7 0.7 1"/>
+    <geom name="big_stair5" type="box" pos="64 0 0.3" size="1.5 3 0.1" material="MatConcrete" rgba="0.7 0.7 0.7 1"/>
+    <geom name="big_stair6" type="box" pos="65.5 0 0.2" size="1.5 3 0.1" material="MatConcrete" rgba="0.7 0.7 0.7 1"/>
+    <geom name="big_stair7" type="box" pos="67 0 0.1" size="1.5 3 0.1" material="MatConcrete" rgba="0.7 0.7 0.7 1"/>
+    
+    <!-- Obstacle 9: Ramp down -->
+    <geom name="ramp_down" type="box" pos="72 0 0.25" size="3 2.5 0.25" material="MatConcrete" rgba="0.6 0.6 0.6 1" euler="0 -0.25 0"/>
+    
+    <!-- Obstacle 10: Final gap -->
+    <geom name="final_platform1" type="box" pos="78 0 0.3" size="2 3 0.3" material="MatWood" rgba="0.6 0.3 0.1 1"/>
+    <geom name="final_platform2" type="box" pos="83 0 0.3" size="2 3 0.3" material="MatWood" rgba="0.6 0.3 0.1 1"/>
+    
+    <!-- Obstacle 11: Swinging pendulum (static for now) -->
+    <body name="pendulum_anchor" pos="88 0 3">
+      <geom name="anchor" type="sphere" size="0.1" rgba="0.5 0.5 0.5 1"/>
+      <body name="pendulum_bob" pos="0 0 -2.5">
+        <joint name="pendulum_swing" type="hinge" axis="0 1 0" range="-1.57 1.57" damping="0.1"/>
+        <geom name="bob" type="sphere" size="0.3" material="MatMetal" rgba="0.8 0.2 0.2 1"/>
+        <inertial pos="0 0 0" mass="50" diaginertia="5 5 5"/>
+      </body>
+    </body>
+    
+    <!-- Obstacle 12: Collapsing bridge (static for now) -->
+    <body name="bridge_section1" pos="92 -1 0.2">
+      <joint name="bridge1_hinge" type="hinge" axis="0 1 0" range="-0.5 0.5" damping="5"/>
+      <geom name="bridge1" type="box" size="1 0.5 0.05" material="MatWood" rgba="0.7 0.4 0.2 1"/>
+      <inertial pos="0 0 0" mass="20" diaginertia="2 2 2"/>
+    </body>
+    <body name="bridge_section2" pos="92 0 0.2">
+      <joint name="bridge2_hinge" type="hinge" axis="0 1 0" range="-0.5 0.5" damping="5"/>
+      <geom name="bridge2" type="box" size="1 0.5 0.05" material="MatWood" rgba="0.7 0.4 0.2 1"/>
+      <inertial pos="0 0 0" mass="20" diaginertia="2 2 2"/>
+    </body>
+    <body name="bridge_section3" pos="92 1 0.2">
+      <joint name="bridge3_hinge" type="hinge" axis="0 1 0" range="-0.5 0.5" damping="5"/>
+      <geom name="bridge3" type="box" size="1 0.5 0.05" material="MatWood" rgba="0.7 0.4 0.2 1"/>
+      <inertial pos="0 0 0" mass="20" diaginertia="2 2 2"/>
+    </body>
+    
+    <!-- Finish line -->
+    <geom name="finish_platform" type="box" pos="98 0 0.1" size="2 4 0.1" material="MatConcrete" rgba="0.3 0.8 0.3 1"/>
+    <geom name="finish_marker" type="cylinder" pos="98 0 0.3" size="0.2 0.1" rgba="1 0 0 1"/>
+    <geom name="finish_flag" type="box" pos="98 0 1" size="0.02 0.5 0.3" rgba="1 1 0 1"/>
+    
+    <!-- Side barriers -->
+    <geom name="barrier_left" type="box" pos="50 -10 0.5" size="100 0.2 0.5" rgba="0.8 0.2 0.2 0.3"/>
+    <geom name="barrier_right" type="box" pos="50 10 0.5" size="100 0.2 0.5" rgba="0.8 0.2 0.2 0.3"/>
+    
+    <!-- Checkpoints for progress tracking -->
+    <geom name="checkpoint1" type="cylinder" pos="15 0 0.05" size="0.05 0.02" rgba="0 0 1 0.5"/>
+    <geom name="checkpoint2" type="cylinder" pos="30 0 0.05" size="0.05 0.02" rgba="0 0 1 0.5"/>
+    <geom name="checkpoint3" type="cylinder" pos="45 0 0.05" size="0.05 0.02" rgba="0 0 1 0.5"/>
+    <geom name="checkpoint4" type="cylinder" pos="60 0 0.05" size="0.05 0.02" rgba="0 0 1 0.5"/>
+    <geom name="checkpoint5" type="cylinder" pos="75 0 0.05" size="0.05 0.02" rgba="0 0 1 0.5"/>
+    <geom name="checkpoint6" type="cylinder" pos="90 0 0.05" size="0.05 0.02" rgba="0 0 1 0.5"/>
+  </worldbody>
+  
+  <actuator>
+    <!-- Moving platform actuator -->
+    <motor name="platform_motor" joint="platform_slide" gear="100" ctrlrange="-100 100"/>
+    
+    <!-- Pendulum actuator (for controlled swinging) -->
+    <motor name="pendulum_motor" joint="pendulum_swing" gear="200" ctrlrange="-200 200"/>
+    
+    <!-- Bridge section actuators -->
+    <motor name="bridge1_motor" joint="bridge1_hinge" gear="50" ctrlrange="-50 50"/>
+    <motor name="bridge2_motor" joint="bridge2_hinge" gear="50" ctrlrange="-50 50"/>
+    <motor name="bridge3_motor" joint="bridge3_hinge" gear="50" ctrlrange="-50 50"/>
+  </actuator>
+</mujoco>

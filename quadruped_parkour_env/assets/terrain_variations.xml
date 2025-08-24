@@ -1,0 +1,166 @@
+<mujoco model="terrain_variations">
+  <compiler angle="radian" coordinate="local" inertiafromgeom="true"/>
+  
+  <option timestep="0.001" iterations="50" solver="PGS" gravity="0 0 -9.81"/>
+  
+  <default>
+    <geom conaffinity="1" contype="1" density="1000"/>
+    <joint armature="0" damping="0" limited="false"/>
+  </default>
+  
+  <asset>
+    <texture builtin="flat" name="texgrass" rgb1="0.2 0.6 0.2" type="2d" width="100" height="100"/>
+    <texture builtin="flat" name="texmud" rgb1="0.4 0.3 0.2" type="2d" width="100" height="100"/>
+    <texture builtin="flat" name="texgravel" rgb1="0.5 0.5 0.4" type="2d" width="100" height="100"/>
+    <texture builtin="flat" name="texice" rgb1="0.8 0.9 1.0" type="2d" width="100" height="100"/>
+    <texture builtin="flat" name="texsand" rgb1="0.8 0.7 0.5" type="2d" width="100" height="100"/>
+    <texture builtin="flat" name="texrock" rgb1="0.3 0.3 0.3" type="2d" width="100" height="100"/>
+    
+    <material name="MatGrass" reflectance="0.1" shininess="0.1" specular="0.1" texrepeat="10 10" texture="texgrass"/>
+    <material name="MatMud" reflectance="0.05" shininess="0.05" specular="0.05" texrepeat="8 8" texture="texmud"/>
+    <material name="MatGravel" reflectance="0.2" shininess="0.2" specular="0.2" texrepeat="15 15" texture="texgravel"/>
+    <material name="MatIce" reflectance="0.9" shininess="1" specular="1" texrepeat="5 5" texture="texice"/>
+    <material name="MatSand" reflectance="0.1" shininess="0.1" specular="0.1" texrepeat="12 12" texture="texsand"/>
+    <material name="MatRock" reflectance="0.3" shininess="0.4" specular="0.4" texrepeat="6 6" texture="texrock"/>
+  </asset>
+  
+  <worldbody>
+    <!-- Grass terrain - normal friction -->
+    <geom name="grass_patch1" type="box" pos="10 2 0.01" size="5 2 0.01" 
+          material="MatGrass" rgba="0.2 0.6 0.2 1" friction="1.0 0.1 0.1"/>
+    <geom name="grass_patch2" type="box" pos="25 -1.5 0.01" size="4 1.5 0.01" 
+          material="MatGrass" rgba="0.2 0.6 0.2 1" friction="1.0 0.1 0.1"/>
+    
+    <!-- Mud terrain - low friction, high damping -->
+    <geom name="mud_patch1" type="box" pos="15 -2.5 0.005" size="3 1.5 0.005" 
+          material="MatMud" rgba="0.4 0.3 0.2 1" friction="0.3 0.05 0.05"/>
+    <geom name="mud_patch2" type="box" pos="35 1 0.005" size="4 2 0.005" 
+          material="MatMud" rgba="0.4 0.3 0.2 1" friction="0.3 0.05 0.05"/>
+    
+    <!-- Gravel terrain - medium friction, rough surface -->
+    <geom name="gravel_patch1" type="box" pos="20 0.5 0.02" size="3 2.5 0.02" 
+          material="MatGravel" rgba="0.5 0.5 0.4 1" friction="0.8 0.15 0.15"/>
+    <geom name="gravel_patch2" type="box" pos="45 -1 0.02" size="5 1.8 0.02" 
+          material="MatGravel" rgba="0.5 0.5 0.4 1" friction="0.8 0.15 0.15"/>
+    
+    <!-- Ice terrain - very low friction -->
+    <geom name="ice_patch1" type="box" pos="30 2 0.005" size="2.5 1.5 0.005" 
+          material="MatIce" rgba="0.8 0.9 1.0 0.8" friction="0.1 0.01 0.01"/>
+    <geom name="ice_patch2" type="box" pos="55 0.5 0.005" size="3 2 0.005" 
+          material="MatIce" rgba="0.8 0.9 1.0 0.8" friction="0.1 0.01 0.01"/>
+    
+    <!-- Sand terrain - soft, energy absorbing -->
+    <geom name="sand_patch1" type="box" pos="40 -2 0.03" size="4 1.8 0.03" 
+          material="MatSand" rgba="0.8 0.7 0.5 1" friction="0.6 0.2 0.2"/>
+    <geom name="sand_patch2" type="box" pos="65 1.5 0.03" size="3.5 1.5 0.03" 
+          material="MatSand" rgba="0.8 0.7 0.5 1" friction="0.6 0.2 0.2"/>
+    
+    <!-- Rocky terrain - high friction, uneven -->
+    <geom name="rock_patch1" type="box" pos="50 -1.5 0.04" size="2.5 1.2 0.04" 
+          material="MatRock" rgba="0.3 0.3 0.3 1" friction="1.2 0.3 0.3"/>
+    <geom name="rock_patch2" type="box" pos="70 0 0.04" size="4 2.5 0.04" 
+          material="MatRock" rgba="0.3 0.3 0.3 1" friction="1.2 0.3 0.3"/>
+    
+    <!-- Uneven rocky terrain with individual rocks -->
+    <geom name="rock1" type="sphere" pos="52 -0.8 0.08" size="0.15" 
+          material="MatRock" rgba="0.4 0.4 0.4 1" friction="1.3 0.3 0.3"/>
+    <geom name="rock2" type="sphere" pos="53.5 -1.2 0.12" size="0.2" 
+          material="MatRock" rgba="0.4 0.4 0.4 1" friction="1.3 0.3 0.3"/>
+    <geom name="rock3" type="sphere" pos="51.2 -1.8 0.1" size="0.18" 
+          material="MatRock" rgba="0.4 0.4 0.4 1" friction="1.3 0.3 0.3"/>
+    <geom name="rock4" type="sphere" pos="72 0.8 0.09" size="0.16" 
+          material="MatRock" rgba="0.4 0.4 0.4 1" friction="1.3 0.3 0.3"/>
+    <geom name="rock5" type="sphere" pos="71 -0.5 0.14" size="0.22" 
+          material="MatRock" rgba="0.4 0.4 0.4 1" friction="1.3 0.3 0.3"/>
+    
+    <!-- Slippery slopes -->
+    <geom name="slope1" type="box" pos="18 1.5 0.15" size="2 1.5 0.15" 
+          material="MatIce" rgba="0.7 0.8 0.9 0.7" friction="0.15 0.02 0.02" euler="0 0.2 0"/>
+    <geom name="slope2" type="box" pos="42 2 0.2" size="2.5 1.8 0.2" 
+          material="MatMud" rgba="0.5 0.4 0.3 1" friction="0.25 0.03 0.03" euler="0 -0.15 0"/>
+    
+    <!-- Unstable platforms (will move slightly when stepped on) -->
+    <body name="unstable_platform1" pos="28 -1 0.1">
+      <joint name="unstable1_x" type="slide" axis="1 0 0" range="-0.1 0.1" damping="20"/>
+      <joint name="unstable1_y" type="slide" axis="0 1 0" range="-0.1 0.1" damping="20"/>
+      <joint name="unstable1_z" type="slide" axis="0 0 1" range="-0.05 0.05" damping="30"/>
+      <joint name="unstable1_rx" type="hinge" axis="1 0 0" range="-0.1 0.1" damping="15"/>
+      <joint name="unstable1_ry" type="hinge" axis="0 1 0" range="-0.1 0.1" damping="15"/>
+      <geom name="unstable_plat1" type="box" size="1.5 1.5 0.05" 
+            material="MatGravel" rgba="0.6 0.5 0.4 1" friction="0.7 0.1 0.1"/>
+      <inertial pos="0 0 0" mass="50" diaginertia="5 5 1"/>
+    </body>
+    
+    <body name="unstable_platform2" pos="48 1.5 0.15">
+      <joint name="unstable2_x" type="slide" axis="1 0 0" range="-0.15 0.15" damping="25"/>
+      <joint name="unstable2_y" type="slide" axis="0 1 0" range="-0.15 0.15" damping="25"/>
+      <joint name="unstable2_z" type="slide" axis="0 0 1" range="-0.08 0.08" damping="35"/>
+      <joint name="unstable2_rx" type="hinge" axis="1 0 0" range="-0.15 0.15" damping="20"/>
+      <joint name="unstable2_ry" type="hinge" axis="0 1 0" range="-0.15 0.15" damping="20"/>
+      <geom name="unstable_plat2" type="box" size="2 1.2 0.08" 
+            material="MatSand" rgba="0.7 0.6 0.4 1" friction="0.5 0.15 0.15"/>
+      <inertial pos="0 0 0" mass="60" diaginertia="6 6 1.2"/>
+    </body>
+    
+    <!-- Narrow passages with different surface materials -->
+    <geom name="narrow_wall1_left" type="box" pos="33 0.6 0.3" size="2 0.1 0.3" 
+          material="MatRock" rgba="0.4 0.4 0.4 1"/>
+    <geom name="narrow_wall1_right" type="box" pos="33 -0.6 0.3" size="2 0.1 0.3" 
+          material="MatRock" rgba="0.4 0.4 0.4 1"/>
+    <geom name="narrow_floor1" type="box" pos="33 0 0.01" size="2 0.5 0.01" 
+          material="MatIce" rgba="0.8 0.9 1.0 0.8" friction="0.12 0.01 0.01"/>
+    
+    <geom name="narrow_wall2_left" type="box" pos="62 0.4 0.25" size="3 0.08 0.25" 
+          material="MatRock" rgba="0.4 0.4 0.4 1"/>
+    <geom name="narrow_wall2_right" type="box" pos="62 -0.4 0.25" size="3 0.08 0.25" 
+          material="MatRock" rgba="0.4 0.4 0.4 1"/>
+    <geom name="narrow_floor2" type="box" pos="62 0 0.02" size="3 0.32 0.02" 
+          material="MatGravel" rgba="0.5 0.5 0.4 1" friction="0.9 0.2 0.2"/>
+    
+    <!-- Holes and pits -->
+    <geom name="pit_wall1" type="box" pos="37 2 -0.3" size="1.5 0.1 0.3" rgba="0.3 0.2 0.1 1"/>
+    <geom name="pit_wall2" type="box" pos="37 -2 -0.3" size="1.5 0.1 0.3" rgba="0.3 0.2 0.1 1"/>
+    <geom name="pit_wall3" type="box" pos="35.5 0 -0.3" size="0.1 2 0.3" rgba="0.3 0.2 0.1 1"/>
+    <geom name="pit_wall4" type="box" pos="38.5 0 -0.3" size="0.1 2 0.3" rgba="0.3 0.2 0.1 1"/>
+    <geom name="pit_bottom" type="box" pos="37 0 -0.6" size="1.5 2 0.01" rgba="0.2 0.1 0.05 1"/>
+    
+    <!-- Weather effects simulation - wind zones (invisible, affect physics) -->
+    <geom name="wind_zone1" type="box" pos="22 0 1" size="3 5 1" rgba="0.5 0.7 1 0.1" 
+          contype="0" conaffinity="0"/>
+    <geom name="wind_zone2" type="box" pos="58 0 1.5" size="4 6 1.5" rgba="0.5 0.7 1 0.1" 
+          contype="0" conaffinity="0"/>
+    
+    <!-- Elevation changes with different materials -->
+    <geom name="hill1" type="box" pos="12 0 0.1" size="2 3 0.1" 
+          material="MatGrass" rgba="0.3 0.7 0.3 1" friction="1.1 0.1 0.1" euler="0 0.1 0"/>
+    <geom name="hill2" type="box" pos="26 1.5 0.15" size="1.8 2 0.15" 
+          material="MatRock" rgba="0.4 0.4 0.4 1" friction="1.3 0.2 0.2" euler="0 -0.12 0"/>
+    <geom name="hill3" type="box" pos="67 -1 0.2" size="2.5 2.5 0.2" 
+          material="MatSand" rgba="0.8 0.7 0.5 1" friction="0.7 0.25 0.25" euler="0 0.08 0"/>
+    
+    <!-- Textured stepping stones -->
+    <geom name="stone1" type="cylinder" pos="38.5 0.8 0.05" size="0.3 0.05" 
+          material="MatRock" rgba="0.5 0.5 0.5 1" friction="1.4 0.3 0.3"/>
+    <geom name="stone2" type="cylinder" pos="39.2 -0.6 0.05" size="0.25 0.05" 
+          material="MatRock" rgba="0.5 0.5 0.5 1" friction="1.4 0.3 0.3"/>
+    <geom name="stone3" type="cylinder" pos="40 0.2 0.05" size="0.35 0.05" 
+          material="MatRock" rgba="0.5 0.5 0.5 1" friction="1.4 0.3 0.3"/>
+    <geom name="stone4" type="cylinder" pos="40.8 -0.9 0.05" size="0.28 0.05" 
+          material="MatRock" rgba="0.5 0.5 0.5 1" friction="1.4 0.3 0.3"/>
+  </worldbody>
+  
+  <actuator>
+    <!-- Actuators for unstable platforms -->
+    <motor name="unstable1_x_motor" joint="unstable1_x" gear="10" ctrlrange="-10 10"/>
+    <motor name="unstable1_y_motor" joint="unstable1_y" gear="10" ctrlrange="-10 10"/>
+    <motor name="unstable1_z_motor" joint="unstable1_z" gear="15" ctrlrange="-15 15"/>
+    <motor name="unstable1_rx_motor" joint="unstable1_rx" gear="8" ctrlrange="-8 8"/>
+    <motor name="unstable1_ry_motor" joint="unstable1_ry" gear="8" ctrlrange="-8 8"/>
+    
+    <motor name="unstable2_x_motor" joint="unstable2_x" gear="12" ctrlrange="-12 12"/>
+    <motor name="unstable2_y_motor" joint="unstable2_y" gear="12" ctrlrange="-12 12"/>
+    <motor name="unstable2_z_motor" joint="unstable2_z" gear="18" ctrlrange="-18 18"/>
+    <motor name="unstable2_rx_motor" joint="unstable2_rx" gear="10" ctrlrange="-10 10"/>
+    <motor name="unstable2_ry_motor" joint="unstable2_ry" gear="10" ctrlrange="-10 10"/>
+  </actuator>
+</mujoco>

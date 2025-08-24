@@ -1,0 +1,222 @@
+<mujoco model="quadruped_robot">
+  <compiler angle="radian" coordinate="local" inertiafromgeom="true"/>
+  
+  <option timestep="0.001" iterations="50" solver="PGS" gravity="0 0 -9.81"/>
+  
+  <size nconmax="500" njmax="2000" nstack="600000"/>
+  
+  <default>
+    <joint armature="0.01" damping="0.1" limited="true"/>
+    <geom conaffinity="0" contype="1" density="1000" friction="1 0.1 0.1" rgba="0.8 0.6 0.4 1"/>
+    <motor ctrlrange="-1 1" ctrllimited="true"/>
+  </default>
+  
+  <asset>
+    <texture builtin="gradient" height="100" rgb1="1 1 1" rgb2="0 0 0" type="skybox" width="100"/>
+    <texture builtin="flat" height="1278" mark="cross" markrgb="1 1 1" name="texgeom" random="0.01" rgb1="0.8 0.6 0.4" rgb2="0.8 0.6 0.4" type="cube" width="127"/>
+    <texture builtin="checker" height="100" name="texplane" rgb1="0 0 0" rgb2="0.8 0.8 0.8" type="2d" width="100"/>
+    <material name="MatPlane" reflectance="0.5" shininess="1" specular="1" texrepeat="60 60" texture="texplane"/>
+    <material name="geom" texture="texgeom" texuniform="true"/>
+  </asset>
+  
+  <worldbody>
+    <light cutoff="100" diffuse="1 1 1" dir="-0 0 -1.3" directional="true" exponent="1" pos="0 0 1.3" specular=".1 .1 .1"/>
+    <geom conaffinity="1" condim="3" material="MatPlane" name="floor" pos="0 0 0" rgba="0.8 0.9 0.8 1" size="100 100 0.125" type="plane"/>
+    
+    <!-- Sites for sensors -->
+    <site name="torso" pos="0 0 0.6" size="0.01"/>
+    <site name="fl_foot" pos="0.3 0.15 -0.25" size="0.01"/>
+    <site name="fr_foot" pos="0.3 -0.15 -0.25" size="0.01"/>
+    <site name="bl_foot" pos="-0.3 0.15 -0.25" size="0.01"/>
+    <site name="br_foot" pos="-0.3 -0.15 -0.25" size="0.01"/>
+    
+    <!-- Main body -->
+    <body name="torso" pos="0 0 0.6">
+      <camera name="track" mode="trackcom" pos="0 -3 0.3" xyaxes="1 0 0 0 0.342 0.940"/>
+      <joint name="root" type="free"/>
+      <inertial pos="0 0 0" mass="25" diaginertia="1.5 2.5 1.0"/>
+      <geom name="torso" type="box" size="0.4 0.15 0.1" rgba="0.2 0.2 0.8 1"/>
+      
+      <!-- Front left leg -->
+      <body name="fl_hip" pos="0.3 0.15 -0.05">
+        <inertial pos="0 0 0" mass="2" diaginertia="0.02 0.02 0.02"/>
+        <joint name="fl_hip_abduction" type="hinge" axis="1 0 0" range="-0.8 0.8" damping="1"/>
+        <geom name="fl_hip" type="capsule" size="0.03" fromto="0 0 0 0 0.1 0" rgba="0.8 0.2 0.2 1"/>
+        
+        <body name="fl_thigh" pos="0 0.1 0">
+          <inertial pos="0 0 -0.15" mass="2" diaginertia="0.05 0.05 0.01"/>
+          <joint name="fl_hip_flexion" type="hinge" axis="0 1 0" range="-1.57 1.57" damping="1"/>
+          <geom name="fl_thigh" type="capsule" size="0.025" fromto="0 0 0 0 0 -0.3" rgba="0.6 0.2 0.2 1"/>
+          
+          <body name="fl_shin" pos="0 0 -0.3">
+            <inertial pos="0 0 -0.125" mass="1" diaginertia="0.02 0.02 0.005"/>
+            <joint name="fl_knee" type="hinge" axis="0 1 0" range="-2.6 0" damping="0.5"/>
+            <geom name="fl_shin" type="capsule" size="0.02" fromto="0 0 0 0 0 -0.25" rgba="0.4 0.2 0.2 1"/>
+            
+            <body name="fl_foot" pos="0 0 -0.25">
+              <inertial pos="0 0 0" mass="0.5" diaginertia="0.01 0.01 0.01"/>
+              <joint name="fl_ankle" type="hinge" axis="0 1 0" range="-0.5 0.5" damping="0.2"/>
+              <geom name="fl_foot" type="sphere" size="0.03" rgba="0.2 0.2 0.2 1" friction="1.2 0.1 0.1"/>
+            </body>
+          </body>
+        </body>
+      </body>
+      
+      <!-- Front right leg -->
+      <body name="fr_hip" pos="0.3 -0.15 -0.05">
+        <inertial pos="0 0 0" mass="2" diaginertia="0.02 0.02 0.02"/>
+        <joint name="fr_hip_abduction" type="hinge" axis="1 0 0" range="-0.8 0.8" damping="1"/>
+        <geom name="fr_hip" type="capsule" size="0.03" fromto="0 0 0 0 -0.1 0" rgba="0.2 0.8 0.2 1"/>
+        
+        <body name="fr_thigh" pos="0 -0.1 0">
+          <inertial pos="0 0 -0.15" mass="2" diaginertia="0.05 0.05 0.01"/>
+          <joint name="fr_hip_flexion" type="hinge" axis="0 1 0" range="-1.57 1.57" damping="1"/>
+          <geom name="fr_thigh" type="capsule" size="0.025" fromto="0 0 0 0 0 -0.3" rgba="0.2 0.6 0.2 1"/>
+          
+          <body name="fr_shin" pos="0 0 -0.3">
+            <inertial pos="0 0 -0.125" mass="1" diaginertia="0.02 0.02 0.005"/>
+            <joint name="fr_knee" type="hinge" axis="0 1 0" range="-2.6 0" damping="0.5"/>
+            <geom name="fr_shin" type="capsule" size="0.02" fromto="0 0 0 0 0 -0.25" rgba="0.2 0.4 0.2 1"/>
+            
+            <body name="fr_foot" pos="0 0 -0.25">
+              <inertial pos="0 0 0" mass="0.5" diaginertia="0.01 0.01 0.01"/>
+              <joint name="fr_ankle" type="hinge" axis="0 1 0" range="-0.5 0.5" damping="0.2"/>
+              <geom name="fr_foot" type="sphere" size="0.03" rgba="0.2 0.2 0.2 1" friction="1.2 0.1 0.1"/>
+            </body>
+          </body>
+        </body>
+      </body>
+      
+      <!-- Back left leg -->
+      <body name="bl_hip" pos="-0.3 0.15 -0.05">
+        <inertial pos="0 0 0" mass="2" diaginertia="0.02 0.02 0.02"/>
+        <joint name="bl_hip_abduction" type="hinge" axis="1 0 0" range="-0.8 0.8" damping="1"/>
+        <geom name="bl_hip" type="capsule" size="0.03" fromto="0 0 0 0 0.1 0" rgba="0.2 0.2 0.8 1"/>
+        
+        <body name="bl_thigh" pos="0 0.1 0">
+          <inertial pos="0 0 -0.15" mass="2" diaginertia="0.05 0.05 0.01"/>
+          <joint name="bl_hip_flexion" type="hinge" axis="0 1 0" range="-1.57 1.57" damping="1"/>
+          <geom name="bl_thigh" type="capsule" size="0.025" fromto="0 0 0 0 0 -0.3" rgba="0.2 0.2 0.6 1"/>
+          
+          <body name="bl_shin" pos="0 0 -0.3">
+            <inertial pos="0 0 -0.125" mass="1" diaginertia="0.02 0.02 0.005"/>
+            <joint name="bl_knee" type="hinge" axis="0 1 0" range="-2.6 0" damping="0.5"/>
+            <geom name="bl_shin" type="capsule" size="0.02" fromto="0 0 0 0 0 -0.25" rgba="0.2 0.2 0.4 1"/>
+            
+            <body name="bl_foot" pos="0 0 -0.25">
+              <inertial pos="0 0 0" mass="0.5" diaginertia="0.01 0.01 0.01"/>
+              <joint name="bl_ankle" type="hinge" axis="0 1 0" range="-0.5 0.5" damping="0.2"/>
+              <geom name="bl_foot" type="sphere" size="0.03" rgba="0.2 0.2 0.2 1" friction="1.2 0.1 0.1"/>
+            </body>
+          </body>
+        </body>
+      </body>
+      
+      <!-- Back right leg -->
+      <body name="br_hip" pos="-0.3 -0.15 -0.05">
+        <inertial pos="0 0 0" mass="2" diaginertia="0.02 0.02 0.02"/>
+        <joint name="br_hip_abduction" type="hinge" axis="1 0 0" range="-0.8 0.8" damping="1"/>
+        <geom name="br_hip" type="capsule" size="0.03" fromto="0 0 0 0 -0.1 0" rgba="0.8 0.8 0.2 1"/>
+        
+        <body name="br_thigh" pos="0 -0.1 0">
+          <inertial pos="0 0 -0.15" mass="2" diaginertia="0.05 0.05 0.01"/>
+          <joint name="br_hip_flexion" type="hinge" axis="0 1 0" range="-1.57 1.57" damping="1"/>
+          <geom name="br_thigh" type="capsule" size="0.025" fromto="0 0 0 0 0 -0.3" rgba="0.6 0.6 0.2 1"/>
+          
+          <body name="br_shin" pos="0 0 -0.3">
+            <inertial pos="0 0 -0.125" mass="1" diaginertia="0.02 0.02 0.005"/>
+            <joint name="br_knee" type="hinge" axis="0 1 0" range="-2.6 0" damping="0.5"/>
+            <geom name="br_shin" type="capsule" size="0.02" fromto="0 0 0 0 0 -0.25" rgba="0.4 0.4 0.2 1"/>
+            
+            <body name="br_foot" pos="0 0 -0.25">
+              <inertial pos="0 0 0" mass="0.5" diaginertia="0.01 0.01 0.01"/>
+              <joint name="br_ankle" type="hinge" axis="0 1 0" range="-0.5 0.5" damping="0.2"/>
+              <geom name="br_foot" type="sphere" size="0.03" rgba="0.2 0.2 0.2 1" friction="1.2 0.1 0.1"/>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+  
+  <actuator>
+    <!-- Front left leg actuators -->
+    <motor name="fl_hip_abduction_motor" joint="fl_hip_abduction" gear="80" ctrlrange="-80 80"/>
+    <motor name="fl_hip_flexion_motor" joint="fl_hip_flexion" gear="80" ctrlrange="-80 80"/>
+    <motor name="fl_knee_motor" joint="fl_knee" gear="60" ctrlrange="-60 60"/>
+    <motor name="fl_ankle_motor" joint="fl_ankle" gear="40" ctrlrange="-40 40"/>
+    
+    <!-- Front right leg actuators -->
+    <motor name="fr_hip_abduction_motor" joint="fr_hip_abduction" gear="80" ctrlrange="-80 80"/>
+    <motor name="fr_hip_flexion_motor" joint="fr_hip_flexion" gear="80" ctrlrange="-80 80"/>
+    <motor name="fr_knee_motor" joint="fr_knee" gear="60" ctrlrange="-60 60"/>
+    <motor name="fr_ankle_motor" joint="fr_ankle" gear="40" ctrlrange="-40 40"/>
+    
+    <!-- Back left leg actuators -->
+    <motor name="bl_hip_abduction_motor" joint="bl_hip_abduction" gear="80" ctrlrange="-80 80"/>
+    <motor name="bl_hip_flexion_motor" joint="bl_hip_flexion" gear="80" ctrlrange="-80 80"/>
+    <motor name="bl_knee_motor" joint="bl_knee" gear="60" ctrlrange="-60 60"/>
+    <motor name="bl_ankle_motor" joint="bl_ankle" gear="40" ctrlrange="-40 40"/>
+    
+    <!-- Back right leg actuators -->
+    <motor name="br_hip_abduction_motor" joint="br_hip_abduction" gear="80" ctrlrange="-80 80"/>
+    <motor name="br_hip_flexion_motor" joint="br_hip_flexion" gear="80" ctrlrange="-80 80"/>
+    <motor name="br_knee_motor" joint="br_knee" gear="60" ctrlrange="-60 60"/>
+    <motor name="br_ankle_motor" joint="br_ankle" gear="40" ctrlrange="-40 40"/>
+  </actuator>
+  
+  <sensor>
+    <!-- IMU sensor on torso -->
+    <accelerometer name="torso_accel" site="torso"/>
+    <gyro name="torso_gyro" site="torso"/>
+    <magnetometer name="torso_mag" site="torso"/>
+    
+    <!-- Joint position sensors -->
+    <jointpos name="fl_hip_abduction_pos" joint="fl_hip_abduction"/>
+    <jointpos name="fl_hip_flexion_pos" joint="fl_hip_flexion"/>
+    <jointpos name="fl_knee_pos" joint="fl_knee"/>
+    <jointpos name="fl_ankle_pos" joint="fl_ankle"/>
+    
+    <jointpos name="fr_hip_abduction_pos" joint="fr_hip_abduction"/>
+    <jointpos name="fr_hip_flexion_pos" joint="fr_hip_flexion"/>
+    <jointpos name="fr_knee_pos" joint="fr_knee"/>
+    <jointpos name="fr_ankle_pos" joint="fr_ankle"/>
+    
+    <jointpos name="bl_hip_abduction_pos" joint="bl_hip_abduction"/>
+    <jointpos name="bl_hip_flexion_pos" joint="bl_hip_flexion"/>
+    <jointpos name="bl_knee_pos" joint="bl_knee"/>
+    <jointpos name="bl_ankle_pos" joint="bl_ankle"/>
+    
+    <jointpos name="br_hip_abduction_pos" joint="br_hip_abduction"/>
+    <jointpos name="br_hip_flexion_pos" joint="br_hip_flexion"/>
+    <jointpos name="br_knee_pos" joint="br_knee"/>
+    <jointpos name="br_ankle_pos" joint="br_ankle"/>
+    
+    <!-- Joint velocity sensors -->
+    <jointvel name="fl_hip_abduction_vel" joint="fl_hip_abduction"/>
+    <jointvel name="fl_hip_flexion_vel" joint="fl_hip_flexion"/>
+    <jointvel name="fl_knee_vel" joint="fl_knee"/>
+    <jointvel name="fl_ankle_vel" joint="fl_ankle"/>
+    
+    <jointvel name="fr_hip_abduction_vel" joint="fr_hip_abduction"/>
+    <jointvel name="fr_hip_flexion_vel" joint="fr_hip_flexion"/>
+    <jointvel name="fr_knee_vel" joint="fr_knee"/>
+    <jointvel name="fr_ankle_vel" joint="fr_ankle"/>
+    
+    <jointvel name="bl_hip_abduction_vel" joint="bl_hip_abduction"/>
+    <jointvel name="bl_hip_flexion_vel" joint="bl_hip_flexion"/>
+    <jointvel name="bl_knee_vel" joint="bl_knee"/>
+    <jointvel name="bl_ankle_vel" joint="bl_ankle"/>
+    
+    <jointvel name="br_hip_abduction_vel" joint="br_hip_abduction"/>
+    <jointvel name="br_hip_flexion_vel" joint="br_hip_flexion"/>
+    <jointvel name="br_knee_vel" joint="br_knee"/>
+    <jointvel name="br_ankle_vel" joint="br_ankle"/>
+    
+    <!-- Foot contact sensors -->
+    <touch name="fl_foot_contact" site="fl_foot"/>
+    <touch name="fr_foot_contact" site="fr_foot"/>
+    <touch name="bl_foot_contact" site="bl_foot"/>
+    <touch name="br_foot_contact" site="br_foot"/>
+  </sensor>
+</mujoco>

@@ -1,0 +1,173 @@
+<mujoco model="humanoid_robot">
+  <compiler angle="radian" coordinate="local" inertiafromgeom="true"/>
+  
+  <default>
+    <joint armature="1" damping="1" limited="true"/>
+    <geom conaffinity="0" condim="3" density="5.0" friction="1 0.5 0.5" margin="0.01" rgba="0.8 0.6 0.4 1"/>
+    <motor ctrllimited="true" ctrlrange="-150.0 150.0"/>
+  </default>
+
+  <asset>
+    <texture builtin="gradient" height="100" rgb1="1 1 1" rgb2="0 0 0" type="skybox" width="100"/>
+    <texture builtin="flat" height="1278" mark="cross" markrgb="1 1 1" name="texgeom" random="0.01" rgb1="0.8 0.6 0.4" rgb2="0.8 0.6 0.4" type="cube" width="127"/>
+    <texture builtin="checker" height="100" name="texplane" rgb1="0 0 0" rgb2="0.8 0.8 0.8" type="2d" width="100"/>
+    <material name="MatPlane" reflectance="0.5" shininess="1" specular="1" texrepeat="60 40" texture="texplane"/>
+    <material name="geom" texture="texgeom" texuniform="true"/>
+  </asset>
+
+  <worldbody>
+    <!-- Humanoid Robot - More realistic proportions -->
+    <!-- Root body for world connection -->
+    <body name="root" pos="0 0 0">
+      <joint name="root_x" type="slide" axis="1 0 0" range="-50 50"/>
+      <joint name="root_y" type="slide" axis="0 1 0" range="-50 50"/>
+      <joint name="root_z" type="slide" axis="0 0 1" range="-50 50"/>
+      <joint name="root_rot" type="hinge" axis="0 0 1" range="-3.14 3.14"/>
+      
+      <!-- Invisible geom for root body physics -->
+      <geom name="root_geom" pos="0 0 0" size="0.01" type="sphere" rgba="0 0 0 0" contype="0" conaffinity="0"/>
+      
+      <!-- Torso body -->
+      <body name="torso" pos="0 0 1.5">
+        <camera name="track" mode="trackcom" pos="0 -4 0" xyaxes="1 0 0 0 0 1"/>
+        <light cutoff="100" diffuse="1 1 1" dir="-0 0 -1.3" directional="true" exponent="1" pos="0 0 1.3" specular=".1 .1 .1"/>
+        
+        <!-- Torso - more realistic proportions -->
+        <geom name="torso1" pos="0 0 0" size="0.3 0.2 0.25" type="capsule"/>
+        <joint armature="0" axis="1 0 0" damping="5" name="abdomen_y" pos="0 0 0" range="-0.5 0.5" stiffness="20" type="hinge"/>
+        <joint armature="0" axis="0 1 0" damping="5" name="abdomen_z" pos="0 0 0" range="-0.3 0.3" stiffness="10" type="hinge"/>
+        <joint armature="0" axis="0 0 1" damping="5" name="abdomen_x" pos="0 0 0" range="-0.6 0.6" stiffness="10" type="hinge"/>
+      
+      <!-- Head - better proportions -->
+      <body name="head" pos="0 0 0.25">
+        <geom name="head" pos="0 0 0.08" rgba="0.8 0.6 0.4 1" size="0.1 0.1 0.08" type="capsule"/>
+        <joint armature="0" axis="0 0 1" damping="5" name="neck_x" pos="0 0 0" range="-0.8 0.8" stiffness="10" type="hinge"/>
+        <joint armature="0" axis="0 1 0" damping="5" name="neck_y" pos="0 0 0" range="-0.5 0.5" stiffness="10" type="hinge"/>
+        
+        <!-- Vision sensor -->
+        <camera name="head_camera" pos="0.05 0 0.05" euler="0 0 0" fovy="60"/>
+      </body>
+
+      <!-- Right Arm - improved proportions and joint ranges -->
+      <body name="right_upper_arm" pos="0 -0.25 0.1">
+        <geom name="right_uarm1" pos="0 0 -0.08" rgba="0.8 0.6 0.4 1" size="0.05 0.18" type="capsule"/>
+        <joint armature="0" axis="2 1 1" damping="5" name="right_shoulder1" pos="0 0 0" range="-1.8 1.8" stiffness="10" type="hinge"/>
+        <joint armature="0" axis="0 -1 1" damping="5" name="right_shoulder2" pos="0 0 0" range="-1.8 1.8" stiffness="10" type="hinge"/>
+        
+        <body name="right_lower_arm" pos="0 0 -0.2">
+          <geom name="right_larm" pos="0 0 -0.1" rgba="0.8 0.6 0.4 1" size="0.035 0.1" type="capsule"/>
+          <joint armature="0" axis="0 1 1" damping="5" name="right_elbow" pos="0 0 0" range="-2.2 0" stiffness="0" type="hinge"/>
+          
+          <body name="right_hand" pos="0 0 -0.2">
+            <geom name="right_hand" pos="0 0 -0.03" rgba="0.8 0.6 0.4 1" size="0.045 0.03" type="capsule"/>
+            <joint armature="0" axis="1 0 0" damping="5" name="right_wrist_y" pos="0 0 0" range="-0.6 0.6" stiffness="10" type="hinge"/>
+            <joint armature="0" axis="0 1 0" damping="5" name="right_wrist_x" pos="0 0 0" range="-0.6 0.6" stiffness="10" type="hinge"/>
+            <joint armature="0" axis="0 0 1" damping="5" name="right_wrist_z" pos="0 0 0" range="-1.2 0.4" stiffness="10" type="hinge"/>
+          </body>
+        </body>
+      </body>
+
+      <!-- Left Arm - improved proportions and joint ranges -->
+      <body name="left_upper_arm" pos="0 0.25 0.1">
+        <geom name="left_uarm1" pos="0 0 -0.08" rgba="0.8 0.6 0.4 1" size="0.05 0.18" type="capsule"/>
+        <joint armature="0" axis="2 -1 1" damping="5" name="left_shoulder1" pos="0 0 0" range="-1.8 1.8" stiffness="10" type="hinge"/>
+        <joint armature="0" axis="0 1 1" damping="5" name="left_shoulder2" pos="0 0 0" range="-1.8 1.8" stiffness="10" type="hinge"/>
+        
+        <body name="left_lower_arm" pos="0 0 -0.2">
+          <geom name="left_larm" pos="0 0 -0.1" rgba="0.8 0.6 0.4 1" size="0.035 0.1" type="capsule"/>
+          <joint armature="0" axis="0 -1 1" damping="5" name="left_elbow" pos="0 0 0" range="-2.2 0" stiffness="0" type="hinge"/>
+          
+          <body name="left_hand" pos="0 0 -0.2">
+            <geom name="left_hand" pos="0 0 -0.03" rgba="0.8 0.6 0.4 1" size="0.045 0.03" type="capsule"/>
+            <joint armature="0" axis="1 0 0" damping="5" name="left_wrist_y" pos="0 0 0" range="-0.6 0.6" stiffness="10" type="hinge"/>
+            <joint armature="0" axis="0 1 0" damping="5" name="left_wrist_x" pos="0 0 0" range="-0.6 0.6" stiffness="10" type="hinge"/>
+            <joint armature="0" axis="0 0 1" damping="5" name="left_wrist_z" pos="0 0 0" range="-0.4 1.2" stiffness="10" type="hinge"/>
+          </body>
+        </body>
+      </body>
+
+      <!-- Right Leg - improved proportions and joint ranges -->
+      <body name="right_thigh" pos="0 -0.12 -0.05">
+        <geom name="right_thigh1" pos="0 0 -0.15" rgba="0.8 0.6 0.4 1" size="0.07 0.15" type="capsule"/>
+        <joint armature="0" axis="0 0 1" damping="5" name="right_hip_x" pos="0 0 0" range="-0.3 0.3" stiffness="10" type="hinge"/>
+        <joint armature="0" axis="1 1 0" damping="5" name="right_hip_z" pos="0 0 0" range="-1.5 0.6" stiffness="10" type="hinge"/>
+        <joint armature="0" axis="0 1 0" damping="5" name="right_hip_y" pos="0 0 0" range="-1.5 0.4" stiffness="10" type="hinge"/>
+        
+        <body name="right_shin" pos="0 0 -0.3">
+          <geom name="right_shin1" pos="0 0 -0.15" rgba="0.8 0.6 0.4 1" size="0.055 0.15" type="capsule"/>
+          <joint armature="0" axis="0 -1 0" damping="6" name="right_knee" pos="0 0 0" range="-2.4 -0.05" stiffness="1" type="hinge"/>
+          
+          <body name="right_foot" pos="0.08 0 -0.3">
+            <geom name="right_foot" pos="0.04 0 -0.03" rgba="0.9 0.6 0.6 1" size="0.08 0.06 0.025" type="box"/>
+            <joint armature="0" axis="0 1 0" damping="3" name="right_ankle_y" pos="0 0 0" range="-0.35 0.35" stiffness="6" type="hinge"/>
+            <joint armature="0" axis="1 0 0" damping="3" name="right_ankle_x" pos="0 0 0" range="-0.08 0.04" stiffness="3" type="hinge"/>
+            <site name="right_foot" pos="0.04 0 -0.03" size="0.02" rgba="1 0 0 0.3"/>
+          </body>
+        </body>
+      </body>
+
+      <!-- Left Leg - improved proportions and joint ranges -->
+      <body name="left_thigh" pos="0 0.12 -0.05">
+        <geom name="left_thigh1" pos="0 0 -0.15" rgba="0.8 0.6 0.4 1" size="0.07 0.15" type="capsule"/>
+        <joint armature="0" axis="0 0 1" damping="5" name="left_hip_x" pos="0 0 0" range="-0.3 0.3" stiffness="10" type="hinge"/>
+        <joint armature="0" axis="1 -1 0" damping="5" name="left_hip_z" pos="0 0 0" range="-0.6 1.5" stiffness="10" type="hinge"/>
+        <joint armature="0" axis="0 1 0" damping="5" name="left_hip_y" pos="0 0 0" range="-0.4 1.5" stiffness="10" type="hinge"/>
+        
+        <body name="left_shin" pos="0 0 -0.3">
+          <geom name="left_shin1" pos="0 0 -0.15" rgba="0.8 0.6 0.4 1" size="0.055 0.15" type="capsule"/>
+          <joint armature="0" axis="0 -1 0" damping="6" name="left_knee" pos="0 0 0" range="-2.4 -0.05" stiffness="1" type="hinge"/>
+          
+          <body name="left_foot" pos="0.08 0 -0.3">
+            <geom name="left_foot" pos="0.04 0 -0.03" rgba="0.9 0.6 0.6 1" size="0.08 0.06 0.025" type="box"/>
+            <joint armature="0" axis="0 1 0" damping="3" name="left_ankle_y" pos="0 0 0" range="-0.35 0.35" stiffness="6" type="hinge"/>
+            <joint armature="0" axis="1 0 0" damping="3" name="left_ankle_x" pos="0 0 0" range="-0.04 0.08" stiffness="3" type="hinge"/>
+            <site name="left_foot" pos="0.04 0 -0.03" size="0.02" rgba="1 0 0 0.3"/>
+          </body>
+        </body>
+      </body>
+      
+      <!-- Torso site -->
+      <site name="torso" pos="0 0 0" size="0.02" rgba="0 1 0 0.3"/>
+        </body>
+      </body>
+    </worldbody>
+
+  <!-- Actuators -->
+  <actuator>
+    <!-- Root movement actuators -->
+    <motor joint="root_x" name="root_x" ctrlrange="-10 10"/>
+    <motor joint="root_y" name="root_y" ctrlrange="-10 10"/>
+    <motor joint="root_z" name="root_z" ctrlrange="-10 10"/>
+    <motor joint="root_rot" name="root_rot" ctrlrange="-5 5"/>
+    
+    <motor joint="abdomen_y" name="abdomen_y"/>
+    <motor joint="abdomen_z" name="abdomen_z"/>
+    <motor joint="abdomen_x" name="abdomen_x"/>
+    <motor joint="neck_x" name="neck_x"/>
+    <motor joint="neck_y" name="neck_y"/>
+    <motor joint="right_shoulder1" name="right_shoulder1"/>
+    <motor joint="right_shoulder2" name="right_shoulder2"/>
+    <motor joint="right_elbow" name="right_elbow"/>
+    <motor joint="right_wrist_y" name="right_wrist_y"/>
+    <motor joint="right_wrist_x" name="right_wrist_x"/>
+    <motor joint="right_wrist_z" name="right_wrist_z"/>
+    <motor joint="left_shoulder1" name="left_shoulder1"/>
+    <motor joint="left_shoulder2" name="left_shoulder2"/>
+    <motor joint="left_elbow" name="left_elbow"/>
+    <motor joint="left_wrist_y" name="left_wrist_y"/>
+    <motor joint="left_wrist_x" name="left_wrist_x"/>
+    <motor joint="left_wrist_z" name="left_wrist_z"/>
+    <motor joint="right_hip_x" name="right_hip_x"/>
+    <motor joint="right_hip_z" name="right_hip_z"/>
+    <motor joint="right_hip_y" name="right_hip_y"/>
+    <motor joint="right_knee" name="right_knee"/>
+    <motor joint="right_ankle_y" name="right_ankle_y"/>
+    <motor joint="right_ankle_x" name="right_ankle_x"/>
+    <motor joint="left_hip_x" name="left_hip_x"/>
+    <motor joint="left_hip_z" name="left_hip_z"/>
+    <motor joint="left_hip_y" name="left_hip_y"/>
+    <motor joint="left_knee" name="left_knee"/>
+    <motor joint="left_ankle_y" name="left_ankle_y"/>
+    <motor joint="left_ankle_x" name="left_ankle_x"/>
+  </actuator>
+</mujoco>

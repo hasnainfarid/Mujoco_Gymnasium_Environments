@@ -1,0 +1,26 @@
+<mujoco model="soccer_ball">
+  <compiler angle="radian" coordinate="local" inertiafromgeom="true"/>
+  
+  <default>
+    <geom conaffinity="1" condim="3" density="400" friction="0.7 0.1 0.1" margin="0.005" rgba="1 1 1 1"/>
+  </default>
+
+  <asset>
+    <!-- Football texture - black and white hexagon pattern -->
+    <texture builtin="checker" height="128" name="football_texture" rgb1="0 0 0" rgb2="1 1 1" type="2d" width="128"/>
+    <material name="football_material" reflectance="0.3" shininess="0.9" specular="0.6" texrepeat="6 4" texture="football_texture"/>
+  </asset>
+
+  <worldbody>
+    <!-- Soccer Ball - positioned in front of player -->
+    <body name="ball" pos="2 0 0.11">
+      <freejoint name="ball_joint"/>
+      
+      <!-- Main ball geometry - proper football size -->
+      <geom name="ball_geom" pos="0 0 0" size="0.15" type="sphere" material="football_material" mass="0.43"/>
+      
+      <!-- Ball sensors -->
+      <site name="ball_center" pos="0 0 0" size="0.01" rgba="1 0 0 0.5"/>
+    </body>
+  </worldbody>
+</mujoco>
