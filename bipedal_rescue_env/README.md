@@ -1,7 +1,6 @@
 
 
-![mujocorescue](https://github.com/user-attachments/assets/9dd7daa0-dfb7-451f-ab26-4c0ca7e0feaa)
-
+<img width="1712" height="900" alt="rescue" src="https://github.com/user-attachments/assets/7d3784b1-927b-4d5e-acc1-42b02563def2" />
 
 
 
