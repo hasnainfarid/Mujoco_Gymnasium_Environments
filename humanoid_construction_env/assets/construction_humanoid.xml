@@ -1,0 +1,3 @@
+<mujoco model="construction_humanoid">
+    <!-- Construction-specific humanoid model -->
+</mujoco>

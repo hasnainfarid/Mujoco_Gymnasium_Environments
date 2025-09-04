@@ -1,0 +1,139 @@
+<?xml version="1.0" ?>
+<mujoco model="robot_arm">
+  <compiler angle="radian" coordinate="local" inertiafromgeom="true"/>
+  <option timestep="0.002" gravity="0 0 -9.81" iterations="50" solver="Newton" tolerance="1e-10"/>
+  
+  <default>
+    <joint armature="1" damping="10" limited="true"/>
+    <geom contype="1" conaffinity="1" friction="1 0.5 0.5" rgba="0.7 0.7 0.7 1"/>
+    <motor ctrllimited="true" ctrlrange="-1 1"/>
+  </default>
+  
+  <asset>
+    <material name="arm_metal" rgba="0.8 0.8 0.9 1" metallic="0.9" roughness="0.3"/>
+    <material name="joint_black" rgba="0.2 0.2 0.2 1" metallic="0.8" roughness="0.4"/>
+    <material name="gripper_red" rgba="0.9 0.2 0.2 1" metallic="0.7" roughness="0.3"/>
+    <material name="sensor_blue" rgba="0.2 0.2 0.9 1" metallic="0.5" roughness="0.2"/>
+  </asset>
+  
+  <worldbody>
+    <!-- Robot Base -->
+    <body name="base" pos="0 0 0">
+      <geom name="base_plate" type="cylinder" size="0.15 0.05" material="joint_black" mass="20"/>
+      <inertial pos="0 0 0" mass="20" diaginertia="0.5 0.5 0.5"/>
+      
+      <!-- Joint 1: Shoulder Pan -->
+      <body name="shoulder_pan" pos="0 0 0.1">
+        <joint name="j1_shoulder_pan" type="hinge" axis="0 0 1" range="-3.14159 3.14159" damping="20"/>
+        <geom name="shoulder_pan_link" type="cylinder" size="0.08 0.15" material="arm_metal" mass="5"/>
+        
+        <!-- Joint 2: Shoulder Tilt -->
+        <body name="shoulder_tilt" pos="0 0 0.2">
+          <joint name="j2_shoulder_tilt" type="hinge" axis="0 1 0" range="-2.356 0.785" damping="20"/>
+          <geom name="shoulder_tilt_link" type="box" size="0.06 0.06 0.25" material="arm_metal" mass="4"/>
+          
+          <!-- Joint 3: Elbow -->
+          <body name="elbow" pos="0 0 0.5">
+            <joint name="j3_elbow" type="hinge" axis="0 1 0" range="-2.967 2.967" damping="15"/>
+            <geom name="elbow_link" type="box" size="0.05 0.05 0.2" material="arm_metal" mass="3"/>
+            
+            <!-- Joint 4: Wrist Roll -->
+            <body name="wrist_roll" pos="0 0 0.4">
+              <joint name="j4_wrist_roll" type="hinge" axis="0 0 1" range="-3.14159 3.14159" damping="5"/>
+              <geom name="wrist_roll_link" type="cylinder" size="0.04 0.08" material="joint_black" mass="1.5"/>
+              
+              <!-- Joint 5: Wrist Pitch -->
+              <body name="wrist_pitch" pos="0 0 0.1">
+                <joint name="j5_wrist_pitch" type="hinge" axis="0 1 0" range="-2.094 2.094" damping="5"/>
+                <geom name="wrist_pitch_link" type="box" size="0.03 0.03 0.05" material="arm_metal" mass="1"/>
+                
+                <!-- Joint 6: Wrist Yaw -->
+                <body name="wrist_yaw" pos="0 0 0.08">
+                  <joint name="j6_wrist_yaw" type="hinge" axis="0 0 1" range="-3.14159 3.14159" damping="3"/>
+                  <geom name="wrist_yaw_link" type="cylinder" size="0.035 0.03" material="joint_black" mass="0.8"/>
+                  
+                  <!-- Gripper Mount -->
+                  <body name="gripper_mount" pos="0 0 0.05">
+                    <joint name="j7_gripper_base" type="hinge" axis="1 0 0" range="-3.14159 3.14159" damping="2"/>
+                    <geom name="gripper_base" type="box" size="0.04 0.04 0.02" material="gripper_red" mass="0.5"/>
+                    
+                    <!-- Camera Sensor -->
+                    <site name="camera_site" pos="0 0 0.03" size="0.01" rgba="0 0 1 1"/>
+                    
+                    <!-- Force/Torque Sensor -->
+                    <site name="ft_sensor" pos="0 0 0" size="0.01" rgba="0 1 0 1"/>
+                    
+                    <!-- Left Gripper Finger -->
+                    <body name="gripper_left" pos="-0.025 0 0.04">
+                      <joint name="gripper_left_joint" type="slide" axis="1 0 0" range="0 0.05" damping="1"/>
+                      <geom name="gripper_left_finger" type="box" size="0.01 0.02 0.04" material="gripper_red" mass="0.1"/>
+                      <geom name="gripper_left_pad" type="box" pos="0.01 0 0" size="0.005 0.015 0.03" 
+                            material="sensor_blue" contype="2" conaffinity="2" friction="2 1 1" mass="0.01"/>
+                    </body>
+                    
+                    <!-- Right Gripper Finger -->
+                    <body name="gripper_right" pos="0.025 0 0.04">
+                      <joint name="gripper_right_joint" type="slide" axis="-1 0 0" range="0 0.05" damping="1"/>
+                      <geom name="gripper_right_finger" type="box" size="0.01 0.02 0.04" material="gripper_red" mass="0.1"/>
+                      <geom name="gripper_right_pad" type="box" pos="-0.01 0 0" size="0.005 0.015 0.03" 
+                            material="sensor_blue" contype="2" conaffinity="2" friction="2 1 1" mass="0.01"/>
+                    </body>
+                    
+                    <!-- End Effector Reference Point -->
+                    <site name="ee_site" pos="0 0 0.08" size="0.005" rgba="1 0 0 1"/>
+                  </body>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+  
+  <actuator>
+    <!-- Joint Motors with Torque Limits -->
+    <motor name="motor_j1" joint="j1_shoulder_pan" gear="100" ctrlrange="-2 2" forcerange="-100 100"/>
+    <motor name="motor_j2" joint="j2_shoulder_tilt" gear="100" ctrlrange="-2 2" forcerange="-100 100"/>
+    <motor name="motor_j3" joint="j3_elbow" gear="50" ctrlrange="-2 2" forcerange="-50 50"/>
+    <motor name="motor_j4" joint="j4_wrist_roll" gear="20" ctrlrange="-2 2" forcerange="-20 20"/>
+    <motor name="motor_j5" joint="j5_wrist_pitch" gear="20" ctrlrange="-2 2" forcerange="-20 20"/>
+    <motor name="motor_j6" joint="j6_wrist_yaw" gear="20" ctrlrange="-2 2" forcerange="-20 20"/>
+    <motor name="motor_j7" joint="j7_gripper_base" gear="10" ctrlrange="-2 2" forcerange="-10 10"/>
+    
+    <!-- Gripper Control -->
+    <position name="gripper_left_pos" joint="gripper_left_joint" kp="200" ctrlrange="0 0.05" forcerange="-50 50"/>
+    <position name="gripper_right_pos" joint="gripper_right_joint" kp="200" ctrlrange="0 0.05" forcerange="-50 50"/>
+  </actuator>
+  
+  <sensor>
+    <!-- Joint Position Sensors -->
+    <jointpos name="j1_pos" joint="j1_shoulder_pan"/>
+    <jointpos name="j2_pos" joint="j2_shoulder_tilt"/>
+    <jointpos name="j3_pos" joint="j3_elbow"/>
+    <jointpos name="j4_pos" joint="j4_wrist_roll"/>
+    <jointpos name="j5_pos" joint="j5_wrist_pitch"/>
+    <jointpos name="j6_pos" joint="j6_wrist_yaw"/>
+    <jointpos name="j7_pos" joint="j7_gripper_base"/>
+    <jointpos name="gripper_left_pos_sensor" joint="gripper_left_joint"/>
+    <jointpos name="gripper_right_pos_sensor" joint="gripper_right_joint"/>
+    
+    <!-- Joint Velocity Sensors -->
+    <jointvel name="j1_vel" joint="j1_shoulder_pan"/>
+    <jointvel name="j2_vel" joint="j2_shoulder_tilt"/>
+    <jointvel name="j3_vel" joint="j3_elbow"/>
+    <jointvel name="j4_vel" joint="j4_wrist_roll"/>
+    <jointvel name="j5_vel" joint="j5_wrist_pitch"/>
+    <jointvel name="j6_vel" joint="j6_wrist_yaw"/>
+    <jointvel name="j7_vel" joint="j7_gripper_base"/>
+    
+    <!-- Force Sensors -->
+    <force name="gripper_left_force" site="gripper_left/geom"/>
+    <force name="gripper_right_force" site="gripper_right/geom"/>
+    <torque name="ft_torque" site="ft_sensor"/>
+    
+    <!-- Touch Sensors -->
+    <touch name="gripper_left_touch" site="gripper_left/geom"/>
+    <touch name="gripper_right_touch" site="gripper_right/geom"/>
+  </sensor>
+</mujoco>

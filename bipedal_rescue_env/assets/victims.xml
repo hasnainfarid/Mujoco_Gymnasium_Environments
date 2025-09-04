@@ -1,0 +1,141 @@
+<mujoco model="victims">
+    <!-- Victim models that need to be rescued -->
+    
+    <!-- Victim 1 - Adult -->
+    <body name="victim1" pos="-12 3 0.3">
+        <joint name="victim1_x" type="slide" axis="1 0 0" limited="false" damping="5"/>
+        <joint name="victim1_y" type="slide" axis="0 1 0" limited="false" damping="5"/>
+        <joint name="victim1_z" type="slide" axis="0 0 1" limited="false" damping="5"/>
+        <joint name="victim1_rx" type="hinge" axis="1 0 0" limited="false" damping="2"/>
+        <joint name="victim1_ry" type="hinge" axis="0 1 0" limited="false" damping="2"/>
+        <joint name="victim1_rz" type="hinge" axis="0 0 1" limited="false" damping="2"/>
+        
+        <!-- Body -->
+        <geom name="victim1_torso" type="capsule" fromto="0 0 0 0 0 0.8" size="0.15" rgba="0.8 0.6 0.6 1" mass="30"/>
+        <!-- Head -->
+        <geom name="victim1_head" type="sphere" pos="0 0 0.95" size="0.12" rgba="0.9 0.8 0.7 1" mass="5"/>
+        <!-- Arms -->
+        <geom name="victim1_right_arm" type="capsule" fromto="0.15 0 0.6 0.4 0 0.2" size="0.05" rgba="0.9 0.8 0.7 1" mass="3"/>
+        <geom name="victim1_left_arm" type="capsule" fromto="-0.15 0 0.6 -0.4 0 0.2" size="0.05" rgba="0.9 0.8 0.7 1" mass="3"/>
+        <!-- Legs -->
+        <geom name="victim1_right_leg" type="capsule" fromto="0.1 0 0 0.1 0 -0.5" size="0.08" rgba="0.3 0.3 0.5 1" mass="8"/>
+        <geom name="victim1_left_leg" type="capsule" fromto="-0.1 0 0 -0.1 0 -0.5" size="0.08" rgba="0.3 0.3 0.5 1" mass="8"/>
+        
+        <!-- Visual indicator of injury -->
+        <site name="victim1_injury" pos="0.1 0 0.3" size="0.1" rgba="1 0 0 0.5"/>
+        <!-- Pickup site for robot -->
+        <site name="victim1_pickup" pos="0 0 0.4" size="0.15" rgba="0 1 0 0.3"/>
+    </body>
+    
+    <!-- Victim 2 - Child -->
+    <body name="victim2" pos="7 -6 0.2">
+        <joint name="victim2_x" type="slide" axis="1 0 0" limited="false" damping="3"/>
+        <joint name="victim2_y" type="slide" axis="0 1 0" limited="false" damping="3"/>
+        <joint name="victim2_z" type="slide" axis="0 0 1" limited="false" damping="3"/>
+        <joint name="victim2_rx" type="hinge" axis="1 0 0" limited="false" damping="1.5"/>
+        <joint name="victim2_ry" type="hinge" axis="0 1 0" limited="false" damping="1.5"/>
+        <joint name="victim2_rz" type="hinge" axis="0 0 1" limited="false" damping="1.5"/>
+        
+        <!-- Smaller body for child -->
+        <geom name="victim2_torso" type="capsule" fromto="0 0 0 0 0 0.5" size="0.1" rgba="0.7 0.5 0.8 1" mass="15"/>
+        <!-- Head -->
+        <geom name="victim2_head" type="sphere" pos="0 0 0.6" size="0.1" rgba="0.9 0.8 0.7 1" mass="3"/>
+        <!-- Arms -->
+        <geom name="victim2_right_arm" type="capsule" fromto="0.1 0 0.4 0.25 0 0.15" size="0.04" rgba="0.9 0.8 0.7 1" mass="1.5"/>
+        <geom name="victim2_left_arm" type="capsule" fromto="-0.1 0 0.4 -0.25 0 0.15" size="0.04" rgba="0.9 0.8 0.7 1" mass="1.5"/>
+        <!-- Legs -->
+        <geom name="victim2_right_leg" type="capsule" fromto="0.07 0 0 0.07 0 -0.3" size="0.05" rgba="0.4 0.4 0.6 1" mass="4"/>
+        <geom name="victim2_left_leg" type="capsule" fromto="-0.07 0 0 -0.07 0 -0.3" size="0.05" rgba="0.4 0.4 0.6 1" mass="4"/>
+        
+        <!-- Visual indicator of injury -->
+        <site name="victim2_injury" pos="0 0.1 0.2" size="0.08" rgba="1 0 0 0.5"/>
+        <!-- Pickup site for robot -->
+        <site name="victim2_pickup" pos="0 0 0.25" size="0.12" rgba="0 1 0 0.3"/>
+    </body>
+    
+    <!-- Victim 3 - Elderly -->
+    <body name="victim3" pos="-3 -10 0.35">
+        <joint name="victim3_x" type="slide" axis="1 0 0" limited="false" damping="6"/>
+        <joint name="victim3_y" type="slide" axis="0 1 0" limited="false" damping="6"/>
+        <joint name="victim3_z" type="slide" axis="0 0 1" limited="false" damping="6"/>
+        <joint name="victim3_rx" type="hinge" axis="1 0 0" limited="false" damping="2.5"/>
+        <joint name="victim3_ry" type="hinge" axis="0 1 0" limited="false" damping="2.5"/>
+        <joint name="victim3_rz" type="hinge" axis="0 0 1" limited="false" damping="2.5"/>
+        
+        <!-- Body slightly hunched -->
+        <geom name="victim3_torso" type="capsule" fromto="0 0 0 0 0.1 0.7" size="0.14" rgba="0.6 0.6 0.8 1" mass="25"/>
+        <!-- Head -->
+        <geom name="victim3_head" type="sphere" pos="0 0.1 0.82" size="0.11" rgba="0.9 0.9 0.8 1" mass="4.5"/>
+        <!-- Arms -->
+        <geom name="victim3_right_arm" type="capsule" fromto="0.14 0.05 0.55 0.35 0.1 0.25" size="0.045" rgba="0.9 0.9 0.8 1" mass="2.5"/>
+        <geom name="victim3_left_arm" type="capsule" fromto="-0.14 0.05 0.55 -0.35 0.1 0.25" size="0.045" rgba="0.9 0.9 0.8 1" mass="2.5"/>
+        <!-- Legs -->
+        <geom name="victim3_right_leg" type="capsule" fromto="0.09 0 0 0.09 0 -0.45" size="0.07" rgba="0.4 0.4 0.4 1" mass="7"/>
+        <geom name="victim3_left_leg" type="capsule" fromto="-0.09 0 0 -0.09 0 -0.45" size="0.07" rgba="0.4 0.4 0.4 1" mass="7"/>
+        
+        <!-- Walking aid -->
+        <geom name="victim3_cane" type="capsule" fromto="0.35 0.15 0.25 0.35 0.15 -0.4" size="0.015" rgba="0.5 0.3 0.1 1" mass="0.5"/>
+        
+        <!-- Visual indicator of injury -->
+        <site name="victim3_injury" pos="-0.1 0 0.4" size="0.09" rgba="1 0 0 0.5"/>
+        <!-- Pickup site for robot -->
+        <site name="victim3_pickup" pos="0 0 0.35" size="0.13" rgba="0 1 0 0.3"/>
+    </body>
+    
+    <!-- Victim 4 - Trapped under debris -->
+    <body name="victim4" pos="2 8 0.15">
+        <joint name="victim4_x" type="slide" axis="1 0 0" limited="false" damping="8"/>
+        <joint name="victim4_y" type="slide" axis="0 1 0" limited="false" damping="8"/>
+        <joint name="victim4_z" type="slide" axis="0 0 1" limited="false" damping="8"/>
+        <joint name="victim4_rx" type="hinge" axis="1 0 0" limited="false" damping="3"/>
+        <joint name="victim4_ry" type="hinge" axis="0 1 0" limited="false" damping="3"/>
+        <joint name="victim4_rz" type="hinge" axis="0 0 1" limited="false" damping="3"/>
+        
+        <!-- Body in prone position -->
+        <geom name="victim4_torso" type="capsule" fromto="0 0 0 0 0.75 0" size="0.15" rgba="0.5 0.7 0.5 1" mass="28"/>
+        <!-- Head -->
+        <geom name="victim4_head" type="sphere" pos="0 0.9 0" size="0.12" rgba="0.9 0.8 0.7 1" mass="5"/>
+        <!-- Arms spread -->
+        <geom name="victim4_right_arm" type="capsule" fromto="0.15 0.5 0 0.5 0.7 0" size="0.05" rgba="0.9 0.8 0.7 1" mass="3"/>
+        <geom name="victim4_left_arm" type="capsule" fromto="-0.15 0.5 0 -0.5 0.7 0" size="0.05" rgba="0.9 0.8 0.7 1" mass="3"/>
+        <!-- Legs -->
+        <geom name="victim4_right_leg" type="capsule" fromto="0.1 -0.1 0 0.1 -0.6 0" size="0.08" rgba="0.6 0.6 0.6 1" mass="8"/>
+        <geom name="victim4_left_leg" type="capsule" fromto="-0.1 -0.1 0 -0.1 -0.6 0" size="0.08" rgba="0.6 0.6 0.6 1" mass="8"/>
+        
+        <!-- Debris on top (visual) -->
+        <geom name="debris_on_victim4" type="box" size="0.3 0.4 0.1" pos="0 0.2 0.2" rgba="0.5 0.5 0.5 0.7" mass="10"/>
+        
+        <!-- Visual indicator of injury -->
+        <site name="victim4_injury" pos="0 0.4 0" size="0.12" rgba="1 0 0 0.5"/>
+        <!-- Pickup site for robot -->
+        <site name="victim4_pickup" pos="0 0.35 0" size="0.15" rgba="0 1 0 0.3"/>
+    </body>
+    
+    <!-- Victim 5 - Unconscious -->
+    <body name="victim5" pos="12 12 0.25">
+        <joint name="victim5_x" type="slide" axis="1 0 0" limited="false" damping="7"/>
+        <joint name="victim5_y" type="slide" axis="0 1 0" limited="false" damping="7"/>
+        <joint name="victim5_z" type="slide" axis="0 0 1" limited="false" damping="7"/>
+        <joint name="victim5_rx" type="hinge" axis="1 0 0" limited="false" damping="2.5"/>
+        <joint name="victim5_ry" type="hinge" axis="0 1 0" limited="false" damping="2.5"/>
+        <joint name="victim5_rz" type="hinge" axis="0 0 1" limited="false" damping="2.5"/>
+        
+        <!-- Body in recovery position -->
+        <geom name="victim5_torso" type="capsule" fromto="0 0 0 0 0.75 0.1" size="0.15" euler="0 0 30" rgba="0.9 0.5 0.5 1" mass="32"/>
+        <!-- Head -->
+        <geom name="victim5_head" type="sphere" pos="0 0.9 0.1" size="0.12" rgba="0.9 0.8 0.7 1" mass="5"/>
+        <!-- Arms -->
+        <geom name="victim5_right_arm" type="capsule" fromto="0.1 0.5 0.05 0.3 0.8 0.15" size="0.05" rgba="0.9 0.8 0.7 1" mass="3"/>
+        <geom name="victim5_left_arm" type="capsule" fromto="-0.1 0.5 0 -0.2 0.2 -0.05" size="0.05" rgba="0.9 0.8 0.7 1" mass="3"/>
+        <!-- Legs bent -->
+        <geom name="victim5_right_leg" type="capsule" fromto="0.1 -0.1 0 0.3 -0.4 0.1" size="0.08" rgba="0.2 0.2 0.4 1" mass="8"/>
+        <geom name="victim5_left_leg" type="capsule" fromto="-0.1 -0.1 0 -0.15 -0.5 0" size="0.08" rgba="0.2 0.2 0.4 1" mass="8"/>
+        
+        <!-- Critical indicator -->
+        <site name="victim5_critical" pos="0 0.4 0.1" size="0.15" rgba="1 0.5 0 0.6"/>
+        <!-- Visual indicator of injury -->
+        <site name="victim5_injury" pos="0 0.6 0.05" size="0.1" rgba="1 0 0 0.5"/>
+        <!-- Pickup site for robot -->
+        <site name="victim5_pickup" pos="0 0.35 0.05" size="0.15" rgba="0 1 0 0.3"/>
+    </body>
+</mujoco>

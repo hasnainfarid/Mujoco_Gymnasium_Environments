@@ -1,0 +1,320 @@
+<?xml version="1.0" ?>
+<mujoco model="robotic_assembly_system">
+  <compiler angle="radian" coordinate="local" inertiafromgeom="true"/>
+  <option timestep="0.002" gravity="0 0 -9.81" iterations="50" solver="Newton" tolerance="1e-10"/>
+  
+  <default>
+    <joint armature="1" damping="10" limited="true"/>
+    <geom contype="1" conaffinity="1" friction="1 0.5 0.5" rgba="0.7 0.7 0.7 1"/>
+    <motor ctrllimited="true" ctrlrange="-1 1"/>
+  </default>
+  
+  <visual>
+    <headlight diffuse="0.5 0.5 0.5" ambient="0.3 0.3 0.3" specular="0 0 0"/>
+    <rgba haze="0.15 0.25 0.35 1"/>
+    <global azimuth="120" elevation="-20"/>
+  </visual>
+  
+  <asset>
+    <!-- Robot materials -->
+    <material name="arm_metal" rgba="0.8 0.8 0.9 1" metallic="0.9" roughness="0.3"/>
+    <material name="joint_black" rgba="0.2 0.2 0.2 1" metallic="0.8" roughness="0.4"/>
+    <material name="gripper_red" rgba="0.9 0.2 0.2 1" metallic="0.7" roughness="0.3"/>
+    <material name="sensor_blue" rgba="0.2 0.2 0.9 1" metallic="0.5" roughness="0.2"/>
+    
+    <!-- Station materials -->
+    <material name="table_wood" rgba="0.6 0.4 0.2 1" metallic="0.1" roughness="0.8"/>
+    <material name="bin_plastic" rgba="0.3 0.3 0.8 0.9" metallic="0.2" roughness="0.6"/>
+    <material name="pcb_green" rgba="0.1 0.6 0.1 1" metallic="0.3" roughness="0.5"/>
+    <material name="metal_silver" rgba="0.8 0.8 0.8 1" metallic="0.95" roughness="0.2"/>
+    <material name="plastic_black" rgba="0.1 0.1 0.1 1" metallic="0.1" roughness="0.7"/>
+    <material name="battery_blue" rgba="0.1 0.1 0.8 1" metallic="0.3" roughness="0.5"/>
+    <material name="cpu_gold" rgba="0.9 0.7 0.2 1" metallic="0.9" roughness="0.1"/>
+    <material name="cable_red" rgba="0.8 0.1 0.1 1" metallic="0.2" roughness="0.6"/>
+    <material name="marker_yellow" rgba="1 1 0 0.5" metallic="0" roughness="1"/>
+    <material name="grid_gray" rgba="0.5 0.5 0.5 0.3" metallic="0" roughness="1"/>
+    <texture name="grid" type="2d" builtin="checker" rgb1="0.7 0.7 0.7" rgb2="0.5 0.5 0.5" width="512" height="512"/>
+  </asset>
+  
+  <worldbody>
+    <!-- Cameras for visualization -->
+    <camera name="overview" pos="2 -2 3" xyaxes="0.5 0.866 0 -0.433 0.25 0.866" mode="fixed"/>
+    <camera name="side_view" pos="0 -2.5 1.5" xyaxes="1 0 0 0 0 1" mode="fixed"/>
+    <camera name="top_view" pos="0 0 3" xyaxes="1 0 0 0 1 0" mode="fixed"/>
+    
+    <!-- Lighting -->
+    <light name="spotlight1" pos="1 1 3" dir="-0.5 -0.5 -1" diffuse="0.8 0.8 0.8" specular="0.2 0.2 0.2" cutoff="45"/>
+    <light name="spotlight2" pos="-1 -1 3" dir="0.5 0.5 -1" diffuse="0.8 0.8 0.8" specular="0.2 0.2 0.2" cutoff="45"/>
+    
+    <!-- ROBOT ARM -->
+    <body name="base" pos="0 0 0">
+      <geom name="base_plate" type="cylinder" size="0.15 0.05" material="joint_black" mass="20"/>
+      <inertial pos="0 0 0" mass="20" diaginertia="0.5 0.5 0.5"/>
+      
+      <!-- Joint 1: Shoulder Pan -->
+      <body name="shoulder_pan" pos="0 0 0.1">
+        <joint name="j1_shoulder_pan" type="hinge" axis="0 0 1" range="-3.14159 3.14159" damping="20"/>
+        <geom name="shoulder_pan_link" type="cylinder" size="0.08 0.15" material="arm_metal" mass="5"/>
+        
+        <!-- Joint 2: Shoulder Tilt -->
+        <body name="shoulder_tilt" pos="0 0 0.2">
+          <joint name="j2_shoulder_tilt" type="hinge" axis="0 1 0" range="-2.356 0.785" damping="20"/>
+          <geom name="shoulder_tilt_link" type="box" size="0.06 0.06 0.25" material="arm_metal" mass="4"/>
+          
+          <!-- Joint 3: Elbow -->
+          <body name="elbow" pos="0 0 0.5">
+            <joint name="j3_elbow" type="hinge" axis="0 1 0" range="-2.967 2.967" damping="15"/>
+            <geom name="elbow_link" type="box" size="0.05 0.05 0.2" material="arm_metal" mass="3"/>
+            
+            <!-- Joint 4: Wrist Roll -->
+            <body name="wrist_roll" pos="0 0 0.4">
+              <joint name="j4_wrist_roll" type="hinge" axis="0 0 1" range="-3.14159 3.14159" damping="5"/>
+              <geom name="wrist_roll_link" type="cylinder" size="0.04 0.08" material="joint_black" mass="1.5"/>
+              
+              <!-- Joint 5: Wrist Pitch -->
+              <body name="wrist_pitch" pos="0 0 0.1">
+                <joint name="j5_wrist_pitch" type="hinge" axis="0 1 0" range="-2.094 2.094" damping="5"/>
+                <geom name="wrist_pitch_link" type="box" size="0.03 0.03 0.05" material="arm_metal" mass="1"/>
+                
+                <!-- Joint 6: Wrist Yaw -->
+                <body name="wrist_yaw" pos="0 0 0.08">
+                  <joint name="j6_wrist_yaw" type="hinge" axis="0 0 1" range="-3.14159 3.14159" damping="3"/>
+                  <geom name="wrist_yaw_link" type="cylinder" size="0.035 0.03" material="joint_black" mass="0.8"/>
+                  
+                  <!-- Gripper Mount -->
+                  <body name="gripper_mount" pos="0 0 0.05">
+                    <joint name="j7_gripper_base" type="hinge" axis="1 0 0" range="-3.14159 3.14159" damping="2"/>
+                    <geom name="gripper_base" type="box" size="0.04 0.04 0.02" material="gripper_red" mass="0.5"/>
+                    
+                    <!-- Camera mount point -->
+                    <camera name="gripper_view" pos="0 0 0.1" xyaxes="1 0 0 0 0 1" mode="track"/>
+                    
+                    <!-- Force/Torque Sensor -->
+                    <site name="ft_sensor" pos="0 0 0" size="0.01" rgba="0 1 0 1"/>
+                    
+                    <!-- Left Gripper Finger -->
+                    <body name="gripper_left" pos="-0.025 0 0.04">
+                      <joint name="gripper_left_joint" type="slide" axis="1 0 0" range="0 0.05" damping="1"/>
+                      <geom name="gripper_left_finger" type="box" size="0.01 0.02 0.04" material="gripper_red" mass="0.1"/>
+                      <geom name="gripper_left_pad" type="box" pos="0.01 0 0" size="0.005 0.015 0.03" 
+                            material="sensor_blue" contype="2" conaffinity="2" friction="2 1 1" mass="0.01"/>
+                    </body>
+                    
+                    <!-- Right Gripper Finger -->
+                    <body name="gripper_right" pos="0.025 0 0.04">
+                      <joint name="gripper_right_joint" type="slide" axis="-1 0 0" range="0 0.05" damping="1"/>
+                      <geom name="gripper_right_finger" type="box" size="0.01 0.02 0.04" material="gripper_red" mass="0.1"/>
+                      <geom name="gripper_right_pad" type="box" pos="-0.01 0 0" size="0.005 0.015 0.03" 
+                            material="sensor_blue" contype="2" conaffinity="2" friction="2 1 1" mass="0.01"/>
+                    </body>
+                    
+                    <!-- End Effector Reference Point -->
+                    <site name="ee_site" pos="0 0 0.08" size="0.005" rgba="1 0 0 1"/>
+                  </body>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+    
+    <!-- ASSEMBLY TABLE AND WORKSTATION -->
+    <body name="table" pos="0 0 0">
+      <geom name="table_top" type="box" size="1.0 0.75 0.02" pos="0 0 0.7" material="table_wood" contype="1" conaffinity="1"/>
+      <geom name="table_leg1" type="box" size="0.05 0.05 0.35" pos="-0.9 -0.65 0.35" material="metal_silver"/>
+      <geom name="table_leg2" type="box" size="0.05 0.05 0.35" pos="0.9 -0.65 0.35" material="metal_silver"/>
+      <geom name="table_leg3" type="box" size="0.05 0.05 0.35" pos="-0.9 0.65 0.35" material="metal_silver"/>
+      <geom name="table_leg4" type="box" size="0.05 0.05 0.35" pos="0.9 0.65 0.35" material="metal_silver"/>
+      
+      <!-- Work Area Grid Markers -->
+      <site name="work_center" pos="0 0 0.73" size="0.01" rgba="1 0 0 1"/>
+      <geom name="work_grid" type="box" size="0.4 0.3 0.001" pos="0 0 0.721" material="grid_gray" contype="0"/>
+    </body>
+    
+    <!-- Component Bins -->
+    <!-- PCB Bin -->
+    <body name="pcb_bin" pos="-0.6 0.3 0.72">
+      <geom name="pcb_bin_base" type="box" size="0.12 0.12 0.03" material="bin_plastic" contype="1"/>
+      <site name="pcb_pickup" pos="0 0 0.04" size="0.01" rgba="0 1 0 1"/>
+    </body>
+    
+    <!-- CPU Bin -->
+    <body name="cpu_bin" pos="-0.6 0 0.72">
+      <geom name="cpu_bin_base" type="box" size="0.08 0.08 0.03" material="bin_plastic" contype="1"/>
+      <site name="cpu_pickup" pos="0 0 0.04" size="0.01" rgba="0 1 0 1"/>
+    </body>
+    
+    <!-- Screw Bin -->
+    <body name="screw_bin" pos="-0.6 -0.3 0.72">
+      <geom name="screw_bin_base" type="box" size="0.1 0.1 0.03" material="bin_plastic" contype="1"/>
+      <site name="screw_pickup" pos="0 0 0.04" size="0.01" rgba="0 1 0 1"/>
+    </body>
+    
+    <!-- Battery Bin -->
+    <body name="battery_bin" pos="0.6 0.3 0.72">
+      <geom name="battery_bin_base" type="box" size="0.15 0.1 0.03" material="bin_plastic" contype="1"/>
+      <site name="battery_pickup" pos="0 0 0.04" size="0.01" rgba="0 1 0 1"/>
+    </body>
+    
+    <!-- Cover Bin -->
+    <body name="cover_bin" pos="0.6 0 0.72">
+      <geom name="cover_bin_base" type="box" size="0.12 0.12 0.03" material="bin_plastic" contype="1"/>
+      <site name="cover_pickup" pos="0 0 0.04" size="0.01" rgba="0 1 0 1"/>
+    </body>
+    
+    <!-- Cable Bin -->
+    <body name="cable_bin" pos="0.6 -0.3 0.72">
+      <geom name="cable_bin_base" type="box" size="0.08 0.08 0.03" material="bin_plastic" contype="1"/>
+      <site name="cable_pickup" pos="0 0 0.04" size="0.01" rgba="0 1 0 1"/>
+    </body>
+    
+    <!-- Assembly Fixture (central work area) -->
+    <body name="fixture" pos="0 0 0.72">
+      <geom name="fixture_base" type="box" size="0.2 0.15 0.01" material="metal_silver" contype="1"/>
+      <!-- PCB mounting posts -->
+      <geom name="mount_post1" type="cylinder" size="0.003 0.015" pos="-0.08 -0.06 0.015" material="metal_silver"/>
+      <geom name="mount_post2" type="cylinder" size="0.003 0.015" pos="0.08 -0.06 0.015" material="metal_silver"/>
+      <geom name="mount_post3" type="cylinder" size="0.003 0.015" pos="-0.08 0.06 0.015" material="metal_silver"/>
+      <geom name="mount_post4" type="cylinder" size="0.003 0.015" pos="0.08 0.06 0.015" material="metal_silver"/>
+      
+      <!-- Assembly alignment markers -->
+      <site name="pcb_placement" pos="0 0 0.02" size="0.01" rgba="0 0 1 0.5"/>
+      <site name="cpu_placement" pos="0 0 0.04" size="0.005" rgba="1 0.5 0 0.5"/>
+      <site name="battery_placement" pos="0.05 0 0.03" size="0.008" rgba="0 0.5 1 0.5"/>
+      <site name="cable_placement" pos="-0.05 0 0.03" size="0.005" rgba="1 0 0 0.5"/>
+    </body>
+    
+    <!-- ASSEMBLY COMPONENTS (initially in bins) -->
+    <!-- Main PCB -->
+    <body name="pcb" pos="-0.6 0.3 0.76">
+      <freejoint/>
+      <geom name="pcb_board" type="box" size="0.1 0.075 0.002" material="pcb_green" contype="2" conaffinity="2" mass="0.05"/>
+      <!-- CPU socket -->
+      <geom name="cpu_socket" type="box" size="0.02 0.02 0.003" pos="0 0 0.003" material="plastic_black" contype="2"/>
+      <!-- Battery connector -->
+      <geom name="battery_connector" type="box" size="0.015 0.008 0.004" pos="0.05 0 0.004" material="plastic_black" contype="2"/>
+      <!-- Cable connector -->
+      <geom name="cable_connector" type="box" size="0.01 0.005 0.004" pos="-0.05 0 0.004" material="plastic_black" contype="2"/>
+    </body>
+    
+    <!-- CPU Chip -->
+    <body name="cpu" pos="-0.6 0 0.76">
+      <freejoint/>
+      <geom name="cpu_chip" type="box" size="0.015 0.015 0.002" material="cpu_gold" contype="2" conaffinity="2" mass="0.01"/>
+      <geom name="cpu_pins" type="box" size="0.012 0.012 0.001" pos="0 0 -0.002" material="metal_silver" contype="2"/>
+    </body>
+    
+    <!-- Mounting Screws (4 pieces) -->
+    <body name="screw1" pos="-0.6 -0.3 0.76">
+      <freejoint/>
+      <geom name="screw1_head" type="cylinder" size="0.004 0.002" material="metal_silver" contype="2" conaffinity="2" mass="0.002"/>
+      <geom name="screw1_shaft" type="cylinder" size="0.002 0.01" pos="0 0 -0.01" material="metal_silver" contype="2"/>
+    </body>
+    
+    <body name="screw2" pos="-0.58 -0.3 0.76">
+      <freejoint/>
+      <geom name="screw2_head" type="cylinder" size="0.004 0.002" material="metal_silver" contype="2" conaffinity="2" mass="0.002"/>
+      <geom name="screw2_shaft" type="cylinder" size="0.002 0.01" pos="0 0 -0.01" material="metal_silver" contype="2"/>
+    </body>
+    
+    <body name="screw3" pos="-0.62 -0.3 0.76">
+      <freejoint/>
+      <geom name="screw3_head" type="cylinder" size="0.004 0.002" material="metal_silver" contype="2" conaffinity="2" mass="0.002"/>
+      <geom name="screw3_shaft" type="cylinder" size="0.002 0.01" pos="0 0 -0.01" material="metal_silver" contype="2"/>
+    </body>
+    
+    <body name="screw4" pos="-0.6 -0.28 0.76">
+      <freejoint/>
+      <geom name="screw4_head" type="cylinder" size="0.004 0.002" material="metal_silver" contype="2" conaffinity="2" mass="0.002"/>
+      <geom name="screw4_shaft" type="cylinder" size="0.002 0.01" pos="0 0 -0.01" material="metal_silver" contype="2"/>
+    </body>
+    
+    <!-- Battery Pack -->
+    <body name="battery" pos="0.6 0.3 0.76">
+      <freejoint/>
+      <geom name="battery_pack" type="box" size="0.06 0.04 0.015" material="battery_blue" contype="2" conaffinity="2" mass="0.15"/>
+      <geom name="battery_connector_male" type="box" size="0.012 0.006 0.003" pos="-0.06 0 0" material="plastic_black" contype="2"/>
+    </body>
+    
+    <!-- Plastic Cover -->
+    <body name="cover" pos="0.6 0 0.76">
+      <freejoint/>
+      <geom name="cover_top" type="box" size="0.105 0.08 0.002" material="plastic_black" contype="2" conaffinity="2" mass="0.03"/>
+      <!-- Snap fit tabs -->
+      <geom name="cover_tab1" type="box" size="0.003 0.01 0.005" pos="-0.1 0 -0.005" material="plastic_black" contype="2"/>
+      <geom name="cover_tab2" type="box" size="0.003 0.01 0.005" pos="0.1 0 -0.005" material="plastic_black" contype="2"/>
+      <geom name="cover_tab3" type="box" size="0.01 0.003 0.005" pos="0 -0.075 -0.005" material="plastic_black" contype="2"/>
+      <geom name="cover_tab4" type="box" size="0.01 0.003 0.005" pos="0 0.075 -0.005" material="plastic_black" contype="2"/>
+    </body>
+    
+    <!-- Ribbon Cable -->
+    <body name="cable" pos="0.6 -0.3 0.76">
+      <freejoint/>
+      <geom name="cable_body" type="box" size="0.04 0.003 0.001" material="cable_red" contype="2" conaffinity="2" mass="0.005"/>
+      <geom name="cable_connector1" type="box" size="0.008 0.004 0.003" pos="-0.04 0 0" material="plastic_black" contype="2"/>
+      <geom name="cable_connector2" type="box" size="0.008 0.004 0.003" pos="0.04 0 0" material="plastic_black" contype="2"/>
+    </body>
+  </worldbody>
+  
+  <actuator>
+    <!-- Joint Motors with Torque Limits -->
+    <motor name="motor_j1" joint="j1_shoulder_pan" gear="100" ctrlrange="-2 2" forcerange="-100 100"/>
+    <motor name="motor_j2" joint="j2_shoulder_tilt" gear="100" ctrlrange="-2 2" forcerange="-100 100"/>
+    <motor name="motor_j3" joint="j3_elbow" gear="50" ctrlrange="-2 2" forcerange="-50 50"/>
+    <motor name="motor_j4" joint="j4_wrist_roll" gear="20" ctrlrange="-2 2" forcerange="-20 20"/>
+    <motor name="motor_j5" joint="j5_wrist_pitch" gear="20" ctrlrange="-2 2" forcerange="-20 20"/>
+    <motor name="motor_j6" joint="j6_wrist_yaw" gear="20" ctrlrange="-2 2" forcerange="-20 20"/>
+    <motor name="motor_j7" joint="j7_gripper_base" gear="10" ctrlrange="-2 2" forcerange="-10 10"/>
+    
+    <!-- Gripper Control -->
+    <position name="gripper_left_pos" joint="gripper_left_joint" kp="200" ctrlrange="0 0.05" forcerange="-50 50"/>
+    <position name="gripper_right_pos" joint="gripper_right_joint" kp="200" ctrlrange="0 0.05" forcerange="-50 50"/>
+  </actuator>
+  
+  <sensor>
+    <!-- Joint Position Sensors -->
+    <jointpos name="j1_pos" joint="j1_shoulder_pan"/>
+    <jointpos name="j2_pos" joint="j2_shoulder_tilt"/>
+    <jointpos name="j3_pos" joint="j3_elbow"/>
+    <jointpos name="j4_pos" joint="j4_wrist_roll"/>
+    <jointpos name="j5_pos" joint="j5_wrist_pitch"/>
+    <jointpos name="j6_pos" joint="j6_wrist_yaw"/>
+    <jointpos name="j7_pos" joint="j7_gripper_base"/>
+    <jointpos name="gripper_left_pos_sensor" joint="gripper_left_joint"/>
+    <jointpos name="gripper_right_pos_sensor" joint="gripper_right_joint"/>
+    
+    <!-- Joint Velocity Sensors -->
+    <jointvel name="j1_vel" joint="j1_shoulder_pan"/>
+    <jointvel name="j2_vel" joint="j2_shoulder_tilt"/>
+    <jointvel name="j3_vel" joint="j3_elbow"/>
+    <jointvel name="j4_vel" joint="j4_wrist_roll"/>
+    <jointvel name="j5_vel" joint="j5_wrist_pitch"/>
+    <jointvel name="j6_vel" joint="j6_wrist_yaw"/>
+    <jointvel name="j7_vel" joint="j7_gripper_base"/>
+  </sensor>
+  
+  <contact>
+    <!-- Gripper-component contact pairs -->
+    <pair geom1="gripper_left_pad" geom2="pcb_board" condim="6" friction="2 1 1"/>
+    <pair geom1="gripper_right_pad" geom2="pcb_board" condim="6" friction="2 1 1"/>
+    <pair geom1="gripper_left_pad" geom2="cpu_chip" condim="6" friction="2 1 1"/>
+    <pair geom1="gripper_right_pad" geom2="cpu_chip" condim="6" friction="2 1 1"/>
+    <pair geom1="gripper_left_pad" geom2="battery_pack" condim="6" friction="2 1 1"/>
+    <pair geom1="gripper_right_pad" geom2="battery_pack" condim="6" friction="2 1 1"/>
+    <pair geom1="gripper_left_pad" geom2="cover_top" condim="6" friction="2 1 1"/>
+    <pair geom1="gripper_right_pad" geom2="cover_top" condim="6" friction="2 1 1"/>
+    <pair geom1="gripper_left_pad" geom2="cable_body" condim="6" friction="2 1 1"/>
+    <pair geom1="gripper_right_pad" geom2="cable_body" condim="6" friction="2 1 1"/>
+    
+    <!-- Screw interactions -->
+    <pair geom1="gripper_left_pad" geom2="screw1_head" condim="6" friction="2 1 1"/>
+    <pair geom1="gripper_right_pad" geom2="screw1_head" condim="6" friction="2 1 1"/>
+    <pair geom1="gripper_left_pad" geom2="screw2_head" condim="6" friction="2 1 1"/>
+    <pair geom1="gripper_right_pad" geom2="screw2_head" condim="6" friction="2 1 1"/>
+    <pair geom1="gripper_left_pad" geom2="screw3_head" condim="6" friction="2 1 1"/>
+    <pair geom1="gripper_right_pad" geom2="screw3_head" condim="6" friction="2 1 1"/>
+    <pair geom1="gripper_left_pad" geom2="screw4_head" condim="6" friction="2 1 1"/>
+    <pair geom1="gripper_right_pad" geom2="screw4_head" condim="6" friction="2 1 1"/>
+  </contact>
+</mujoco>

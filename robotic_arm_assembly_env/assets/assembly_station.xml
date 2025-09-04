@@ -1,0 +1,186 @@
+<?xml version="1.0" ?>
+<mujoco model="assembly_station">
+  <compiler angle="radian" coordinate="local" inertiafromgeom="true"/>
+  
+  <asset>
+    <material name="table_wood" rgba="0.6 0.4 0.2 1" metallic="0.1" roughness="0.8"/>
+    <material name="bin_plastic" rgba="0.3 0.3 0.8 0.9" metallic="0.2" roughness="0.6"/>
+    <material name="pcb_green" rgba="0.1 0.6 0.1 1" metallic="0.3" roughness="0.5"/>
+    <material name="metal_silver" rgba="0.8 0.8 0.8 1" metallic="0.95" roughness="0.2"/>
+    <material name="plastic_black" rgba="0.1 0.1 0.1 1" metallic="0.1" roughness="0.7"/>
+    <material name="battery_blue" rgba="0.1 0.1 0.8 1" metallic="0.3" roughness="0.5"/>
+    <material name="cpu_gold" rgba="0.9 0.7 0.2 1" metallic="0.9" roughness="0.1"/>
+    <material name="cable_red" rgba="0.8 0.1 0.1 1" metallic="0.2" roughness="0.6"/>
+    <material name="marker_yellow" rgba="1 1 0 0.5" metallic="0" roughness="1"/>
+    <material name="grid_gray" rgba="0.5 0.5 0.5 0.3" metallic="0" roughness="1"/>
+    <texture name="grid" type="2d" builtin="checker" rgb1="0.7 0.7 0.7" rgb2="0.5 0.5 0.5" width="512" height="512"/>
+  </asset>
+  
+  <worldbody>
+    <!-- Assembly Table -->
+    <body name="table" pos="0 0 0">
+      <geom name="table_top" type="box" size="1.0 0.75 0.02" pos="0 0 0.7" material="table_wood" contype="1" conaffinity="1"/>
+      <geom name="table_leg1" type="box" size="0.05 0.05 0.35" pos="-0.9 -0.65 0.35" material="metal_silver"/>
+      <geom name="table_leg2" type="box" size="0.05 0.05 0.35" pos="0.9 -0.65 0.35" material="metal_silver"/>
+      <geom name="table_leg3" type="box" size="0.05 0.05 0.35" pos="-0.9 0.65 0.35" material="metal_silver"/>
+      <geom name="table_leg4" type="box" size="0.05 0.05 0.35" pos="0.9 0.65 0.35" material="metal_silver"/>
+      
+      <!-- Work Area Grid Markers -->
+      <site name="work_center" pos="0 0 0.73" size="0.01" rgba="1 0 0 1"/>
+      <geom name="work_grid" type="box" size="0.4 0.3 0.001" pos="0 0 0.721" material="grid_gray" contype="0"/>
+      
+      <!-- Component Bins -->
+      <!-- PCB Bin -->
+      <body name="pcb_bin" pos="-0.6 0.3 0.72">
+        <geom name="pcb_bin_base" type="box" size="0.12 0.12 0.03" material="bin_plastic" contype="1"/>
+        <geom name="pcb_bin_wall1" type="box" size="0.12 0.002 0.05" pos="0 -0.12 0.05" material="bin_plastic"/>
+        <geom name="pcb_bin_wall2" type="box" size="0.12 0.002 0.05" pos="0 0.12 0.05" material="bin_plastic"/>
+        <geom name="pcb_bin_wall3" type="box" size="0.002 0.12 0.05" pos="-0.12 0 0.05" material="bin_plastic"/>
+        <geom name="pcb_bin_wall4" type="box" size="0.002 0.12 0.05" pos="0.12 0 0.05" material="bin_plastic"/>
+        <site name="pcb_pickup" pos="0 0 0.04" size="0.01" rgba="0 1 0 1"/>
+      </body>
+      
+      <!-- CPU Bin -->
+      <body name="cpu_bin" pos="-0.6 0 0.72">
+        <geom name="cpu_bin_base" type="box" size="0.08 0.08 0.03" material="bin_plastic" contype="1"/>
+        <geom name="cpu_bin_wall1" type="box" size="0.08 0.002 0.04" pos="0 -0.08 0.04" material="bin_plastic"/>
+        <geom name="cpu_bin_wall2" type="box" size="0.08 0.002 0.04" pos="0 0.08 0.04" material="bin_plastic"/>
+        <geom name="cpu_bin_wall3" type="box" size="0.002 0.08 0.04" pos="-0.08 0 0.04" material="bin_plastic"/>
+        <geom name="cpu_bin_wall4" type="box" size="0.002 0.08 0.04" pos="0.08 0 0.04" material="bin_plastic"/>
+        <site name="cpu_pickup" pos="0 0 0.04" size="0.01" rgba="0 1 0 1"/>
+      </body>
+      
+      <!-- Screw Bin -->
+      <body name="screw_bin" pos="-0.6 -0.3 0.72">
+        <geom name="screw_bin_base" type="box" size="0.1 0.1 0.03" material="bin_plastic" contype="1"/>
+        <geom name="screw_bin_wall1" type="box" size="0.1 0.002 0.04" pos="0 -0.1 0.04" material="bin_plastic"/>
+        <geom name="screw_bin_wall2" type="box" size="0.1 0.002 0.04" pos="0 0.1 0.04" material="bin_plastic"/>
+        <geom name="screw_bin_wall3" type="box" size="0.002 0.1 0.04" pos="-0.1 0 0.04" material="bin_plastic"/>
+        <geom name="screw_bin_wall4" type="box" size="0.002 0.1 0.04" pos="0.1 0 0.04" material="bin_plastic"/>
+        <site name="screw_pickup" pos="0 0 0.04" size="0.01" rgba="0 1 0 1"/>
+      </body>
+      
+      <!-- Battery Bin -->
+      <body name="battery_bin" pos="0.6 0.3 0.72">
+        <geom name="battery_bin_base" type="box" size="0.15 0.1 0.03" material="bin_plastic" contype="1"/>
+        <geom name="battery_bin_wall1" type="box" size="0.15 0.002 0.05" pos="0 -0.1 0.05" material="bin_plastic"/>
+        <geom name="battery_bin_wall2" type="box" size="0.15 0.002 0.05" pos="0 0.1 0.05" material="bin_plastic"/>
+        <geom name="battery_bin_wall3" type="box" size="0.002 0.1 0.05" pos="-0.15 0 0.05" material="bin_plastic"/>
+        <geom name="battery_bin_wall4" type="box" size="0.002 0.1 0.05" pos="0.15 0 0.05" material="bin_plastic"/>
+        <site name="battery_pickup" pos="0 0 0.04" size="0.01" rgba="0 1 0 1"/>
+      </body>
+      
+      <!-- Cover Bin -->
+      <body name="cover_bin" pos="0.6 0 0.72">
+        <geom name="cover_bin_base" type="box" size="0.12 0.12 0.03" material="bin_plastic" contype="1"/>
+        <geom name="cover_bin_wall1" type="box" size="0.12 0.002 0.05" pos="0 -0.12 0.05" material="bin_plastic"/>
+        <geom name="cover_bin_wall2" type="box" size="0.12 0.002 0.05" pos="0 0.12 0.05" material="bin_plastic"/>
+        <geom name="cover_bin_wall3" type="box" size="0.002 0.12 0.05" pos="-0.12 0 0.05" material="bin_plastic"/>
+        <geom name="cover_bin_wall4" type="box" size="0.002 0.12 0.05" pos="0.12 0 0.05" material="bin_plastic"/>
+        <site name="cover_pickup" pos="0 0 0.04" size="0.01" rgba="0 1 0 1"/>
+      </body>
+      
+      <!-- Cable Bin -->
+      <body name="cable_bin" pos="0.6 -0.3 0.72">
+        <geom name="cable_bin_base" type="box" size="0.08 0.08 0.03" material="bin_plastic" contype="1"/>
+        <geom name="cable_bin_wall1" type="box" size="0.08 0.002 0.04" pos="0 -0.08 0.04" material="bin_plastic"/>
+        <geom name="cable_bin_wall2" type="box" size="0.08 0.002 0.04" pos="0 0.08 0.04" material="bin_plastic"/>
+        <geom name="cable_bin_wall3" type="box" size="0.002 0.08 0.04" pos="-0.08 0 0.04" material="bin_plastic"/>
+        <geom name="cable_bin_wall4" type="box" size="0.002 0.08 0.04" pos="0.08 0 0.04" material="bin_plastic"/>
+        <site name="cable_pickup" pos="0 0 0.04" size="0.01" rgba="0 1 0 1"/>
+      </body>
+      
+      <!-- Assembly Fixture (central work area) -->
+      <body name="fixture" pos="0 0 0.72">
+        <geom name="fixture_base" type="box" size="0.2 0.15 0.01" material="metal_silver" contype="1"/>
+        <!-- PCB mounting posts -->
+        <geom name="mount_post1" type="cylinder" size="0.003 0.015" pos="-0.08 -0.06 0.015" material="metal_silver"/>
+        <geom name="mount_post2" type="cylinder" size="0.003 0.015" pos="0.08 -0.06 0.015" material="metal_silver"/>
+        <geom name="mount_post3" type="cylinder" size="0.003 0.015" pos="-0.08 0.06 0.015" material="metal_silver"/>
+        <geom name="mount_post4" type="cylinder" size="0.003 0.015" pos="0.08 0.06 0.015" material="metal_silver"/>
+        
+        <!-- Assembly alignment markers -->
+        <site name="pcb_placement" pos="0 0 0.02" size="0.01" rgba="0 0 1 0.5"/>
+        <site name="cpu_placement" pos="0 0 0.04" size="0.005" rgba="1 0.5 0 0.5"/>
+        <site name="battery_placement" pos="0.05 0 0.03" size="0.008" rgba="0 0.5 1 0.5"/>
+        <site name="cable_placement" pos="-0.05 0 0.03" size="0.005" rgba="1 0 0 0.5"/>
+      </body>
+    </body>
+    
+    <!-- Assembly Components (initially in bins) -->
+    <!-- Main PCB -->
+    <body name="pcb" pos="-0.6 0.3 0.76">
+      <freejoint/>
+      <geom name="pcb_board" type="box" size="0.1 0.075 0.002" material="pcb_green" contype="2" conaffinity="2" mass="0.05"/>
+      <!-- PCB mounting holes -->
+      <site name="pcb_hole1" pos="-0.08 -0.06 0" size="0.003" rgba="0 0 0 1"/>
+      <site name="pcb_hole2" pos="0.08 -0.06 0" size="0.003" rgba="0 0 0 1"/>
+      <site name="pcb_hole3" pos="-0.08 0.06 0" size="0.003" rgba="0 0 0 1"/>
+      <site name="pcb_hole4" pos="0.08 0.06 0" size="0.003" rgba="0 0 0 1"/>
+      <!-- CPU socket -->
+      <geom name="cpu_socket" type="box" size="0.02 0.02 0.003" pos="0 0 0.003" material="plastic_black" contype="2"/>
+      <!-- Battery connector -->
+      <geom name="battery_connector" type="box" size="0.015 0.008 0.004" pos="0.05 0 0.004" material="plastic_black" contype="2"/>
+      <!-- Cable connector -->
+      <geom name="cable_connector" type="box" size="0.01 0.005 0.004" pos="-0.05 0 0.004" material="plastic_black" contype="2"/>
+    </body>
+    
+    <!-- CPU Chip -->
+    <body name="cpu" pos="-0.6 0 0.76">
+      <freejoint/>
+      <geom name="cpu_chip" type="box" size="0.015 0.015 0.002" material="cpu_gold" contype="2" conaffinity="2" mass="0.01"/>
+      <geom name="cpu_pins" type="box" size="0.012 0.012 0.001" pos="0 0 -0.002" material="metal_silver" contype="2"/>
+    </body>
+    
+    <!-- Mounting Screws (4 pieces) -->
+    <body name="screw1" pos="-0.6 -0.3 0.76">
+      <freejoint/>
+      <geom name="screw1_head" type="cylinder" size="0.004 0.002" material="metal_silver" contype="2" conaffinity="2" mass="0.002"/>
+      <geom name="screw1_shaft" type="cylinder" size="0.002 0.01" pos="0 0 -0.01" material="metal_silver" contype="2"/>
+    </body>
+    
+    <body name="screw2" pos="-0.58 -0.3 0.76">
+      <freejoint/>
+      <geom name="screw2_head" type="cylinder" size="0.004 0.002" material="metal_silver" contype="2" conaffinity="2" mass="0.002"/>
+      <geom name="screw2_shaft" type="cylinder" size="0.002 0.01" pos="0 0 -0.01" material="metal_silver" contype="2"/>
+    </body>
+    
+    <body name="screw3" pos="-0.62 -0.3 0.76">
+      <freejoint/>
+      <geom name="screw3_head" type="cylinder" size="0.004 0.002" material="metal_silver" contype="2" conaffinity="2" mass="0.002"/>
+      <geom name="screw3_shaft" type="cylinder" size="0.002 0.01" pos="0 0 -0.01" material="metal_silver" contype="2"/>
+    </body>
+    
+    <body name="screw4" pos="-0.6 -0.28 0.76">
+      <freejoint/>
+      <geom name="screw4_head" type="cylinder" size="0.004 0.002" material="metal_silver" contype="2" conaffinity="2" mass="0.002"/>
+      <geom name="screw4_shaft" type="cylinder" size="0.002 0.01" pos="0 0 -0.01" material="metal_silver" contype="2"/>
+    </body>
+    
+    <!-- Battery Pack -->
+    <body name="battery" pos="0.6 0.3 0.76">
+      <freejoint/>
+      <geom name="battery_pack" type="box" size="0.06 0.04 0.015" material="battery_blue" contype="2" conaffinity="2" mass="0.15"/>
+      <geom name="battery_connector_male" type="box" size="0.012 0.006 0.003" pos="-0.06 0 0" material="plastic_black" contype="2"/>
+    </body>
+    
+    <!-- Plastic Cover -->
+    <body name="cover" pos="0.6 0 0.76">
+      <freejoint/>
+      <geom name="cover_top" type="box" size="0.105 0.08 0.002" material="plastic_black" contype="2" conaffinity="2" mass="0.03"/>
+      <!-- Snap fit tabs -->
+      <geom name="cover_tab1" type="box" size="0.003 0.01 0.005" pos="-0.1 0 -0.005" material="plastic_black" contype="2"/>
+      <geom name="cover_tab2" type="box" size="0.003 0.01 0.005" pos="0.1 0 -0.005" material="plastic_black" contype="2"/>
+      <geom name="cover_tab3" type="box" size="0.01 0.003 0.005" pos="0 -0.075 -0.005" material="plastic_black" contype="2"/>
+      <geom name="cover_tab4" type="box" size="0.01 0.003 0.005" pos="0 0.075 -0.005" material="plastic_black" contype="2"/>
+    </body>
+    
+    <!-- Ribbon Cable -->
+    <body name="cable" pos="0.6 -0.3 0.76">
+      <freejoint/>
+      <geom name="cable_body" type="box" size="0.04 0.003 0.001" material="cable_red" contype="2" conaffinity="2" mass="0.005"/>
+      <geom name="cable_connector1" type="box" size="0.008 0.004 0.003" pos="-0.04 0 0" material="plastic_black" contype="2"/>
+      <geom name="cable_connector2" type="box" size="0.008 0.004 0.003" pos="0.04 0 0" material="plastic_black" contype="2"/>
+    </body>
+  </worldbody>
+</mujoco>

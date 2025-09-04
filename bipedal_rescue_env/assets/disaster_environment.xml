@@ -1,0 +1,110 @@
+<mujoco model="disaster_environment">
+    <!-- Disaster scene with debris, obstacles, and safe zones -->
+    <worldbody>
+        <!-- Ground plane with rough terrain -->
+        <geom name="ground" type="plane" size="30 30 0.1" rgba="0.5 0.4 0.3 1" friction="1.5 0.1 0.1"/>
+        
+        <!-- Safe zone (rescue point) -->
+        <body name="safe_zone" pos="20 0 0">
+            <geom name="safe_zone_platform" type="box" size="3 3 0.1" rgba="0.2 0.8 0.2 0.5"/>
+            <geom name="safe_zone_marker" type="cylinder" size="2.5 0.02" pos="0 0 0.11" rgba="0 1 0 0.3"/>
+            <site name="safe_zone_center" pos="0 0 0.5" size="0.5" rgba="0 1 0 1"/>
+            
+            <!-- Medical tent marker -->
+            <geom name="tent_pole1" type="cylinder" size="0.05 2" pos="-2 -2 2" rgba="0.8 0.8 0.8 1"/>
+            <geom name="tent_pole2" type="cylinder" size="0.05 2" pos="2 -2 2" rgba="0.8 0.8 0.8 1"/>
+            <geom name="tent_pole3" type="cylinder" size="0.05 2" pos="2 2 2" rgba="0.8 0.8 0.8 1"/>
+            <geom name="tent_pole4" type="cylinder" size="0.05 2" pos="-2 2 2" rgba="0.8 0.8 0.8 1"/>
+            <geom name="tent_roof" type="box" size="2.5 2.5 0.05" pos="0 0 4" rgba="1 0.2 0.2 0.7"/>
+        </body>
+        
+        <!-- Debris field 1 - Collapsed building -->
+        <body name="debris_building" pos="-10 5 0">
+            <geom name="wall_fragment1" type="box" size="2 0.2 1.5" pos="0 0 0.75" euler="0 15 0" rgba="0.7 0.7 0.7 1"/>
+            <geom name="wall_fragment2" type="box" size="1.5 0.2 1.2" pos="3 1 0.6" euler="0 -20 10" rgba="0.7 0.7 0.7 1"/>
+            <geom name="concrete_block1" type="box" size="0.5 0.5 0.5" pos="-1 -0.5 0.25" rgba="0.6 0.6 0.6 1"/>
+            <geom name="concrete_block2" type="box" size="0.6 0.4 0.3" pos="1.5 0.5 0.15" euler="0 0 30" rgba="0.6 0.6 0.6 1"/>
+            <geom name="rubble1" type="sphere" size="0.3" pos="-0.5 1 0.3" rgba="0.5 0.5 0.5 1"/>
+            <geom name="rubble2" type="sphere" size="0.25" pos="0.8 -0.8 0.25" rgba="0.5 0.5 0.5 1"/>
+            <geom name="beam1" type="capsule" fromto="-2 0 0.5 2 0.5 1" size="0.1" rgba="0.8 0.4 0.2 1"/>
+        </body>
+        
+        <!-- Debris field 2 - Damaged vehicles -->
+        <body name="debris_vehicles" pos="5 -8 0">
+            <geom name="car_body" type="box" size="1.8 0.8 0.6" pos="0 0 0.6" euler="0 0 25" rgba="0.3 0.3 0.8 1"/>
+            <geom name="car_wheel1" type="cylinder" size="0.3 0.1" pos="-1 -0.8 0.3" euler="90 0 0" rgba="0.1 0.1 0.1 1"/>
+            <geom name="car_wheel2" type="cylinder" size="0.3 0.1" pos="1 -0.8 0.3" euler="90 0 0" rgba="0.1 0.1 0.1 1"/>
+            <geom name="truck_body" type="box" size="2.5 1.2 0.8" pos="4 0 0.8" euler="0 10 -15" rgba="0.8 0.3 0.3 1"/>
+        </body>
+        
+        <!-- Fire hazard zones (visual only) -->
+        <body name="fire_zone1" pos="-5 -3 0">
+            <geom name="fire_base1" type="cylinder" size="1.5 0.01" pos="0 0 0.01" rgba="1 0.5 0 0.3"/>
+            <geom name="fire_particles1" type="sphere" size="0.8" pos="0 0 0.8" rgba="1 0.3 0 0.2"/>
+        </body>
+        
+        <body name="fire_zone2" pos="8 6 0">
+            <geom name="fire_base2" type="cylinder" size="1.2 0.01" pos="0 0 0.01" rgba="1 0.5 0 0.3"/>
+            <geom name="fire_particles2" type="sphere" size="0.6" pos="0 0 0.6" rgba="1 0.3 0 0.2"/>
+        </body>
+        
+        <!-- Unstable structures -->
+        <body name="unstable_wall" pos="0 10 0">
+            <joint name="wall_sway" type="hinge" axis="1 0 0" limited="false" damping="10"/>
+            <geom name="unstable_wall_geom" type="box" size="3 0.15 2" pos="0 0 2" rgba="0.8 0.7 0.6 1"/>
+            <geom name="wall_crack" type="box" size="0.05 0.16 0.8" pos="0 0 1.5" rgba="0.2 0.2 0.2 0.5"/>
+        </body>
+        
+        <!-- Fallen power lines (obstacles) -->
+        <body name="power_lines" pos="-8 0 0">
+            <geom name="power_pole1" type="cylinder" size="0.15 3" pos="0 0 3" euler="0 20 0" rgba="0.4 0.3 0.2 1"/>
+            <geom name="power_line1" type="capsule" fromto="0 0 5 5 2 3" size="0.02" rgba="0.1 0.1 0.1 1"/>
+            <geom name="power_line2" type="capsule" fromto="0 0 4.5 4.5 1.5 2.8" size="0.02" rgba="0.1 0.1 0.1 1"/>
+            <geom name="spark_zone" type="sphere" size="0.5" pos="2.5 1 2" rgba="0 0.5 1 0.2"/>
+        </body>
+        
+        <!-- Small obstacles and debris -->
+        <body name="small_debris1" pos="-3 2 0">
+            <geom name="debris1_geom" type="box" size="0.3 0.3 0.2" pos="0 0 0.2" euler="10 15 20" rgba="0.6 0.5 0.4 1"/>
+        </body>
+        
+        <body name="small_debris2" pos="2 -4 0">
+            <geom name="debris2_geom" type="sphere" size="0.25" pos="0 0 0.25" rgba="0.5 0.5 0.5 1"/>
+        </body>
+        
+        <body name="small_debris3" pos="6 3 0">
+            <geom name="debris3_geom" type="cylinder" size="0.2 0.4" pos="0 0 0.4" euler="30 0 0" rgba="0.7 0.6 0.5 1"/>
+        </body>
+        
+        <!-- Ramp/elevation changes -->
+        <body name="ramp1" pos="-15 0 0">
+            <geom name="ramp1_geom" type="box" size="2 3 0.5" pos="0 0 0.25" euler="0 -10 0" rgba="0.6 0.5 0.4 1"/>
+        </body>
+        
+        <body name="ramp2" pos="10 0 0">
+            <geom name="ramp2_geom" type="box" size="1.5 2 0.3" pos="0 0 0.15" euler="0 15 0" rgba="0.6 0.5 0.4 1"/>
+        </body>
+        
+        <!-- Boundary walls -->
+        <body name="boundary_north" pos="0 25 0">
+            <geom name="wall_north" type="box" size="30 0.2 3" pos="0 0 1.5" rgba="0.3 0.3 0.3 0.5"/>
+        </body>
+        
+        <body name="boundary_south" pos="0 -25 0">
+            <geom name="wall_south" type="box" size="30 0.2 3" pos="0 0 1.5" rgba="0.3 0.3 0.3 0.5"/>
+        </body>
+        
+        <body name="boundary_east" pos="25 0 0">
+            <geom name="wall_east" type="box" size="0.2 25 3" pos="0 0 1.5" rgba="0.3 0.3 0.3 0.5"/>
+        </body>
+        
+        <body name="boundary_west" pos="-25 0 0">
+            <geom name="wall_west" type="box" size="0.2 25 3" pos="0 0 1.5" rgba="0.3 0.3 0.3 0.5"/>
+        </body>
+    </worldbody>
+    
+    <!-- Lights for dramatic effect -->
+    <light name="emergency_light1" pos="20 0 5" dir="0 0 -1" diffuse="1 0.2 0.2" specular="0.5 0.1 0.1"/>
+    <light name="emergency_light2" pos="-10 5 4" dir="0 0 -1" diffuse="1 0.5 0" specular="0.5 0.2 0"/>
+    <light name="searchlight" pos="0 0 10" dir="0 0 -1" diffuse="0.8 0.8 0.8" specular="0.3 0.3 0.3"/>
+</mujoco>
