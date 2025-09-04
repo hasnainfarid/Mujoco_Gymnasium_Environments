@@ -1,3 +1,9 @@
+
+<img width="1730" height="946" alt="constr" src="https://github.com/user-attachments/assets/0475c96e-fef5-45dc-8127-6567e1f05d25" />
+
+
+
+
 # Humanoid Construction Environment
 
 A sophisticated MuJoCo-based 3D construction simulation environment for reinforcement learning, featuring a 27-DOF humanoid robot performing complex construction tasks.
