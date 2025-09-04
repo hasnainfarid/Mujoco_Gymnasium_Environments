@@ -1,3 +1,8 @@
+
+<img width="1730" height="887" alt="Screenshot 2025-09-05 010119" src="https://github.com/user-attachments/assets/d2661b0c-08e3-4a62-a3e6-446112baf761" />
+
+
+
 # Robotic Arm Assembly Environment
 
 A MuJoCo-based gymnasium environment for industrial robotic assembly tasks with precision manipulation.
