@@ -1,3 +1,8 @@
+
+<img width="1710" height="905" alt="Dance" src="https://github.com/user-attachments/assets/f253d71d-9a62-4f26-94be-78d9f79172f7" />
+
+
+
 # Humanoid Dancing Environment
 
 A MuJoCo-based humanoid robot dancing environment for reinforcement learning research. The environment simulates a humanoid robot learning to perform various dance moves, follow rhythm patterns, maintain balance, and execute choreographed sequences with style.
