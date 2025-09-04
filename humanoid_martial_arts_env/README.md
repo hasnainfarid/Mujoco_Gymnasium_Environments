@@ -1,3 +1,9 @@
+
+<img width="1722" height="916" alt="MMA" src="https://github.com/user-attachments/assets/22ccc2de-9580-44bc-929e-41facea14ed9" />
+
+
+
+
 # Humanoid Martial Arts Environment
 
 A sophisticated MuJoCo-based martial arts training environment for reinforcement learning research.
