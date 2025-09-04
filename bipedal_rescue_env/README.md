@@ -1,3 +1,11 @@
+
+
+![mujocorescue](https://github.com/user-attachments/assets/9dd7daa0-dfb7-451f-ab26-4c0ca7e0feaa)
+
+
+
+
+
 # Bipedal Rescue Environment
 
 A sophisticated MuJoCo-based disaster rescue simulation environment for Gymnasium, featuring a bipedal robot navigating through hazardous terrain to rescue victims.
